@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>Tra cứu vận đơn - HL TrungViet Logistics</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <link href="img/favicon.ico" rel="icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body class="page-track">
+    <div class="container-xxl py-5 bg-light track-section" id="track">
+        <div class="container py-5">
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-5 tracking-hero text-white">
+                    <h6 class="text-secondary text-uppercase mb-3">Theo dõi đơn</h6>
+                    <h1 class="mb-4">Tra cứu vận đơn</h1>
+                    <p class="mb-4">Nhập mã vận đơn và chọn hãng (nếu biết) để xem chi tiết trạng thái.</p>
+                    <ul class="mb-0">
+                        <li>Mã ví dụ: SYZZ036501740 (SUNYOU)</li>
+                        <li>Chọn hãng để định tuyến chính xác hơn.</li>
+                    </ul>
+                </div>
+                <div class="col-lg-7">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <form id="tracking-form" class="row g-3" method="get">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold" for="tracking-number">Mã vận đơn</label>
+                                    <input type="text" class="form-control" id="tracking-number" name="number" placeholder="Nhập mã (ví dụ: YT...)" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold" for="carrier">Hãng vận chuyển (tùy chọn)</label>
+                                    <input list="carrier-list" class="form-control" id="carrier-input" name="carrierText" placeholder="Gõ tên hoặc mã (ví dụ: YunExpress, 100003)">
+                                    <datalist id="carrier-list"></datalist>
+                                    <div class="form-text">Tự động nếu bỏ trống. Chọn từ danh sách để định tuyến chính xác hơn.</div>
+                                </div>
+                                <div class="col-12 d-flex align-items-center">
+                                    <button type="submit" class="btn btn-primary me-3">Tra cứu</button>
+                                    <span id="tracking-status" class="text-secondary small"></span>
+                                </div>
+                                <div class="col-12">
+                                    <div class="bg-light border rounded p-3" style="min-height: 140px;">
+                                        <div class="fw-semibold mb-2">Kết quả</div>
+                                        <div id="tracking-pretty" class="mb-3 small text-dark"></div>
+                                        <pre id="tracking-result" class="mb-0 small text-break d-none" style="white-space: pre-wrap;"></pre>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script>
+        (function() {
+            const form = document.getElementById('tracking-form');
+            if (!form) return;
+
+            const numberInput = document.getElementById('tracking-number');
+            const carrierInput = document.getElementById('carrier-input');
+            const carrierDatalist = document.getElementById('carrier-list');
+            const statusEl = document.getElementById('tracking-status');
+            const resultEl = document.getElementById('tracking-result');
+            const prettyEl = document.getElementById('tracking-pretty');
+
+            const API_BASE = (location.port === '5500') ? 'http://localhost:3000' : '';
+            const API_URL = `${API_BASE}/api/track`;
+            const CARRIER_URL = `${API_BASE}/api/carriers`;
+
+            let carrierNameByKey = {};
+
+            async function loadCarriers() {
+                try {
+                    const res = await fetch(CARRIER_URL);
+                    if (!res.ok) throw new Error(`Carrier list error ${res.status}`);
+                    const data = await res.json();
+                    const carriers = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
+                    carrierNameByKey = carriers.reduce((acc, c) => {
+                        acc[c.key] = c._name || c.name || '';
+                        return acc;
+                    }, {});
+                    carrierDatalist.innerHTML = carriers.map(c => `<option value="${c.key} - ${c._name || c.name}">${c._name || c.name}</option>`).join('');
+                } catch (err) {
+                    console.warn('Không tải được danh sách hãng:', err);
+                }
+            }
+            loadCarriers();
+
+            function parseCarrierValue(value) {
+                const match = String(value || '').trim().match(/^\d+/);
+                if (!match) return undefined;
+                return Number(match[0]);
+            }
+
+            function formatDate(iso) {
+                if (!iso) return '';
+                return iso.replace('T', ' ').replace('Z', ' UTC');
+            }
+
+            function formatResult(data) {
+                try {
+                    const accepted = data?.info?.data?.accepted?.[0];
+                    if (!accepted) return 'Không có dữ liệu.';
+                    const carrierKey = accepted.carrier;
+                    const carrierName = carrierNameByKey[carrierKey] || (carrierKey || 'auto');
+                    const latest = accepted.track_info?.latest_event;
+                    const latestStatus = accepted.track_info?.latest_status;
+                    const provider = accepted.track_info?.tracking?.providers?.[0];
+                    const providerName = provider?.provider?.name || carrierName || 'N/A';
+                    const events = provider?.events || [];
+                    const lines = [];
+                    lines.push(`Mã: ${accepted.number}`);
+                    lines.push(`Hãng: ${providerName} (${carrierKey || 'auto'})`);
+                    if (latestStatus?.status) lines.push(`Trạng thái: ${latestStatus.status}${latestStatus.sub_status ? ` / ${latestStatus.sub_status}` : ''}`);
+                    if (latest?.description) lines.push(`Mới nhất: ${latest.description}`);
+                    if (latest?.time_iso) lines.push(`Thời gian: ${latest.time_iso}`);
+                    if (latest?.location) lines.push(`Vị trí: ${latest.location}`);
+                    if (events.length) {
+                        lines.push('--- Lịch sử ---');
+                        events.slice(0, 10).forEach(ev => {
+                            const t = ev.time_iso || ev.time_utc || '';
+                            const loc = ev.location ? ` (${ev.location})` : '';
+                            lines.push(`• ${t} – ${ev.description || ''}${loc}`);
+                        });
+                    }
+                    return lines.join('\\n');
+                } catch (err) {
+                    return 'Không thể định dạng kết quả.';
+                }
+            }
+
+            function formatResultHtml(data) {
+                const accepted = data?.info?.data?.accepted?.[0];
+                if (!accepted) return '<div class="text-muted">Không có dữ liệu.</div>';
+                const carrierKey = accepted.carrier;
+                const carrierName = carrierNameByKey[carrierKey] || (carrierKey || 'auto');
+                const latest = accepted.track_info?.latest_event;
+                const latestStatus = accepted.track_info?.latest_status;
+                const provider = accepted.track_info?.tracking?.providers?.[0];
+                const providerName = provider?.provider?.name || carrierName || 'N/A';
+                const events = provider?.events || [];
+                const badgeClass = (latestStatus?.status || '').toLowerCase().includes('delivered') ? 'bg-success' : 'bg-secondary';
+
+                const header = `
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="me-3">
+                            <span class="badge ${badgeClass}">${latestStatus?.status || 'Status'}</span>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">${accepted.number}</div>
+                            <div class="text-muted small">${carrierName} (${carrierKey || 'auto'})</div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="fw-semibold">${latest?.description || ''}</div>
+                        <div class="text-muted small">${formatDate(latest?.time_iso || latest?.time_utc)}${latest?.location ? ` • ${latest.location}` : ''}</div>
+                    </div>
+                `;
+
+                const list = events.slice(0, 15).map(ev => {
+                    const t = formatDate(ev.time_iso || ev.time_utc || '');
+                    const loc = ev.location ? ` • ${ev.location}` : '';
+                    return `<li class="mb-1"><span class="text-muted">${t}</span> — ${ev.description || ''}${loc}</li>`;
+                }).join('');
+
+                return `
+                    ${header}
+                    <div class="small text-muted mb-2">Hãng: ${providerName}</div>
+                    <ul class="ps-3 mb-0" style="border-left: 2px solid #0d6efd;">
+                        ${list || '<li class="text-muted">Chưa có sự kiện.</li>'}
+                    </ul>
+                `;
+            }
+
+            // If params are present, auto-fill and fetch
+            const params = new URLSearchParams(window.location.search);
+            const initialNumber = params.get('number');
+            const initialCarrierText = params.get('carrierText');
+            const initialCarrier = params.get('carrier');
+            if (initialNumber) numberInput.value = initialNumber;
+            if (initialCarrierText) carrierInput.value = initialCarrierText;
+
+            async function runLookup(e) {
+                if (e) e.preventDefault();
+                const trackingNumber = numberInput.value.trim();
+                const carrier = initialCarrier ? Number(initialCarrier) : parseCarrierValue(carrierInput.value);
+
+                if (!trackingNumber) {
+                    statusEl.textContent = 'Vui lòng nhập mã vận đơn.';
+                    return;
+                }
+
+                statusEl.textContent = 'Đang tra cứu...';
+                if (resultEl) resultEl.textContent = '';
+                if (prettyEl) prettyEl.innerHTML = '';
+
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            number: trackingNumber,
+                            carrier: carrier || undefined,
+                            carrierText: carrierInput.value || ''
+                        })
+                    });
+
+                    if (!res.ok) {
+                        throw new Error(`API trả về mã ${res.status}`);
+                    }
+
+                    const data = await res.json();
+                    statusEl.textContent = 'Thành công';
+                    const pretty = formatResult(data);
+                    const prettyHtml = formatResultHtml(data);
+                    if (resultEl) {
+                        resultEl.textContent = ''; // hide raw
+                    }
+                    if (prettyEl) {
+                        prettyEl.innerHTML = prettyHtml || pretty;
+                    }
+                } catch (err) {
+                    statusEl.textContent = 'Không thể tra cứu. Kiểm tra token/API hoặc thử lại.';
+                    if (resultEl) resultEl.textContent = '';
+                    if (prettyEl) prettyEl.innerHTML = '';
+                }
+            }
+
+            form.addEventListener('submit', runLookup);
+            if (initialNumber) {
+                runLookup();
+            }
+        })();
+    </script>
+</body>
+</html>
