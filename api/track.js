@@ -125,7 +125,23 @@ export default async function handler(req, res) {
       return;
     }
 
-    res.status(200).json({ register, info });
+    // Step 3: delete tracking to avoid further polling
+    const stopRes = await fetch(`${BASE_V24}/deletetrack`, {
+      method: 'POST',
+      headers: {
+        '17token': API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify([
+        {
+          number,
+          carrier: carrierResolved || undefined
+        }
+      ])
+    });
+    const stop = await stopRes.json().catch(() => ({}));
+
+    res.status(200).json({ register, info, stop });
   } catch (err) {
     res.status(500).json({ error: err.message || 'Unknown error' });
   }
