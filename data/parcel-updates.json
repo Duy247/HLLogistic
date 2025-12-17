@@ -1,0 +1,25 @@
+{
+  "parcels": {
+    "SYZZ036501740": {
+      "code": "SYZZ036501740",
+      "updates": [
+        {
+          "id": "d43f5d50-8bf9-432d-aab5-cbc22b8c4abf",
+          "time": "2025-12-17T20:00:00.000Z",
+          "event": "Leave",
+          "location": "HN",
+          "createdAt": "2025-12-17T15:25:18.338Z",
+          "updatedAt": "2025-12-17T15:30:00.518Z"
+        },
+        {
+          "id": "e7573a26-81b1-410f-9d67-50da73736a97",
+          "time": "2025-12-17T21:00:00.000Z",
+          "event": "Arrived",
+          "location": "Dương Nội",
+          "createdAt": "2025-12-17T15:33:27.125Z"
+        }
+      ],
+      "updatedAt": "2025-12-17T15:33:27.125Z"
+    }
+  }
+}

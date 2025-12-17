@@ -5,6 +5,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
+const { sql } = require('@vercel/postgres');
 
 function loadEnv() {
     const envPath = path.join(process.cwd(), '.env');
@@ -26,6 +27,7 @@ loadEnv();
 
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.TRACK17_KEY || '';
+const PARCEL_SECRET = process.env.PARCEL_UPDATES_SECRET || '';
 const BASE_V1 = 'https://api.17track.net/track/v1';
 const BASE_V24 = 'https://api.17track.net/track/v2.4';
 const CARRIER_FILE = path.join(process.cwd(), 'carriers', 'apicarrier.all.json');
@@ -187,6 +189,156 @@ function guessContentType(file) {
     }
 }
 
+function normalizeParcelCode(code) {
+    return String(code || '').trim();
+}
+
+function defaultMidnightIso() {
+    const d = new Date();
+    d.setUTCHours(0, 0, 0, 0);
+    return d.toISOString();
+}
+
+function normalizeParcelInput(update = {}) {
+    return {
+        time: update.time || update.timestamp || update.date || defaultMidnightIso(),
+        event: update.event || update.description || '',
+        location: update.location || update.place || ''
+    };
+}
+
+async function ensureParcel(code) {
+    await sql`insert into parcels (code) values (${code}) on conflict (code) do nothing`;
+}
+
+async function fetchParcelUpdates(code) {
+    const { rows } = await sql`
+        select id, code, time, event, location, created_at as "createdAt", updated_at as "updatedAt"
+        from parcel_updates
+        where code = ${code}
+        order by time desc, created_at desc
+    `;
+    return rows;
+}
+
+async function latestUpdateId(code) {
+    const { rows } = await sql`
+        select id from parcel_updates
+        where code = ${code}
+        order by time desc, created_at desc
+        limit 1
+    `;
+    return rows[0]?.id;
+}
+
+async function createParcelUpdate(code, data) {
+    const input = normalizeParcelInput(data);
+    await ensureParcel(code);
+    const { rows } = await sql`
+        insert into parcel_updates (code, time, event, location)
+        values (${code}, ${input.time}, ${input.event}, ${input.location})
+        returning id, code, time, event, location, created_at as "createdAt", updated_at as "updatedAt"
+    `;
+    return rows[0];
+}
+
+async function updateParcelUpdate(code, updateId, data) {
+    const input = normalizeParcelInput(data);
+    const targetId = updateId || (await latestUpdateId(code));
+    if (!targetId) return null;
+    const { rows } = await sql`
+        update parcel_updates
+        set time = coalesce(${input.time}, time),
+            event = coalesce(${input.event}, event),
+            location = coalesce(${input.location}, location),
+            updated_at = now()
+        where id = ${targetId} and code = ${code}
+        returning id, code, time, event, location, created_at as "createdAt", updated_at as "updatedAt"
+    `;
+    return rows[0] || null;
+}
+
+async function deleteParcelUpdate(code, updateId) {
+    const targetId = updateId || (await latestUpdateId(code));
+    if (!targetId) return null;
+    const { rows } = await sql`
+        delete from parcel_updates
+        where id = ${targetId} and code = ${code}
+        returning id, code, time, event, location, created_at as "createdAt", updated_at as "updatedAt"
+    `;
+    return rows[0] || null;
+}
+
+async function handleParcelUpdates(req, res, url) {
+    // CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204);
+        return res.end();
+    }
+
+    if (req.method === 'GET') {
+        const code = normalizeParcelCode(url.searchParams.get('code') || url.searchParams.get('parcel') || url.searchParams.get('number'));
+        if (!code) {
+            return sendJson(res, 400, { error: 'code is required' });
+        }
+        try {
+            const updates = await fetchParcelUpdates(code);
+            return sendJson(res, 200, { code, updates });
+        } catch (err) {
+            return sendJson(res, 500, { error: err.message || 'Failed to fetch updates' });
+        }
+    }
+
+    if (req.method !== 'POST') {
+        return sendJson(res, 405, { error: 'Method not allowed' });
+    }
+
+    if (!PARCEL_SECRET) {
+        return sendJson(res, 500, { error: 'PARCEL_UPDATES_SECRET not set' });
+    }
+
+    const body = await parseBody(req).catch(() => ({}));
+    const providedSecret = body.secret || body.secretKey || body.key;
+    if (providedSecret !== PARCEL_SECRET) {
+        return sendJson(res, 401, { error: 'Unauthorized' });
+    }
+
+    const mode = String(body.mode || '').trim().toUpperCase();
+    const code = normalizeParcelCode(body.parcelCode || body.code || body.number);
+    const data = body.data || {};
+    const updateId = body.updateId || data.id || data.updateId;
+
+    if (!mode) return sendJson(res, 400, { error: 'mode is required' });
+    if (!code) return sendJson(res, 400, { error: 'parcelCode is required' });
+
+    try {
+        if (mode === 'CREATE') {
+            const created = await createParcelUpdate(code, data);
+            return sendJson(res, 200, { code, update: created });
+        }
+
+        if (mode === 'UPDATE') {
+            const updated = await updateParcelUpdate(code, updateId, data);
+            if (!updated) return sendJson(res, 404, { error: 'Update not found' });
+            return sendJson(res, 200, { code, update: updated });
+        }
+
+        if (mode === 'DELETE') {
+            const removed = await deleteParcelUpdate(code, updateId);
+            if (!removed) return sendJson(res, 404, { error: 'Update not found' });
+            return sendJson(res, 200, { code, removed });
+        }
+    } catch (err) {
+        return sendJson(res, 500, { error: err.message || 'Database error' });
+    }
+
+    return sendJson(res, 400, { error: 'Unknown mode. Use CREATE, UPDATE or DELETE.' });
+}
+
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
 
@@ -209,6 +361,10 @@ const server = http.createServer(async (req, res) => {
             const status = err.status || 500;
             return sendJson(res, status, { error: err.message || 'Unknown error', detail: err.body });
         }
+    }
+
+    if ((req.method === 'GET' || req.method === 'POST' || req.method === 'OPTIONS') && url.pathname === '/api/parcel-updates') {
+        return handleParcelUpdates(req, res, url);
     }
 
     if (req.method === 'GET' && url.pathname === '/api/carriers') {

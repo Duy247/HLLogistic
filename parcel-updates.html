@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Parcel Updates (Temp)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <strong>Write (POST /api/parcel-updates)</strong>
+                    </div>
+                    <div class="card-body">
+                        <form id="write-form" class="vstack gap-3">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label">Secret</label>
+                                    <input type="password" class="form-control" id="secret" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Mode</label>
+                                    <select class="form-select" id="mode" required>
+                                        <option value="CREATE">CREATE</option>
+                                        <option value="UPDATE">UPDATE</option>
+                                        <option value="DELETE">DELETE</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label">Parcel Code</label>
+                                    <input type="text" class="form-control" id="parcelCode" placeholder="e.g. SYZZ036501740" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Update ID (for update/delete; optional to target latest)</label>
+                                    <input type="text" class="form-control" id="updateId">
+                                </div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <label class="form-label">Time (ISO)</label>
+                                    <input type="text" class="form-control" id="time" placeholder="2025-01-01T08:00:00Z">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-control" id="location" placeholder="Hà Nội Warehouse">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label">Event</label>
+                                <input type="text" class="form-control" id="event" placeholder="Arrived at hub">
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <button type="submit" class="btn btn-primary">Send</button>
+                                <span id="write-status" class="text-muted small"></span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header">
+                        <strong>Read (GET /api/parcel-updates?code=...)</strong>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <form id="read-form" class="vstack gap-2 mb-3">
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label">Parcel Code</label>
+                                    <input type="text" class="form-control" id="readCode" placeholder="e.g. SYZZ036501740" required>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <button type="submit" class="btn btn-success">Fetch updates</button>
+                                <span id="read-status" class="text-muted small"></span>
+                            </div>
+                        </form>
+                        <div class="bg-light border rounded p-3 flex-grow-1">
+                            <div class="fw-semibold mb-2">Updates</div>
+                            <div id="updates-list" class="small text-dark">No data.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col">
+                <pre id="log" class="bg-dark text-light p-3 rounded small" style="min-height: 120px;">Ready.</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const writeForm = document.getElementById('write-form');
+            const readForm = document.getElementById('read-form');
+            const writeStatus = document.getElementById('write-status');
+            const readStatus = document.getElementById('read-status');
+            const logEl = document.getElementById('log');
+            const updatesEl = document.getElementById('updates-list');
+            const timeInput = document.getElementById('time');
+
+            const API_BASE = (location.port === '5500') ? 'http://localhost:3000' : '';
+            const WRITE_URL = `${API_BASE}/api/parcel-updates`;
+            const READ_URL = `${API_BASE}/api/parcel-updates`;
+
+            function log(msg, data) {
+                const time = new Date().toISOString();
+                const text = data ? `${msg}\n${JSON.stringify(data, null, 2)}` : msg;
+                logEl.textContent = `[${time}] ${text}`;
+            }
+
+            function renderUpdates(list) {
+                const items = Array.isArray(list) ? list : [];
+                if (!items.length) {
+                    updatesEl.textContent = 'No updates.';
+                    return;
+                }
+                const html = items
+                    .slice()
+                    .sort((a, b) => new Date(b.time || b.createdAt || 0) - new Date(a.time || a.createdAt || 0))
+                    .map(u => {
+                        const when = u.time || u.createdAt || '';
+                        const loc = u.location ? ` • ${u.location}` : '';
+                        return `<li class="mb-1"><span class="text-muted">${when}</span> — ${u.event || ''}${loc}<br><span class="text-muted">id: ${u.id}</span></li>`;
+                    })
+                    .join('');
+                updatesEl.innerHTML = `<ul class="ps-3 mb-0" style="border-left: 2px solid #0d6efd;">${html}</ul>`;
+            }
+
+            // Default time to 00:00 UTC of current day
+            (function setDefaultTime() {
+                const nowMidnight = new Date();
+                nowMidnight.setUTCHours(0, 0, 0, 0);
+                if (timeInput) timeInput.value = nowMidnight.toISOString();
+            })();
+
+            writeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                writeStatus.textContent = 'Sending...';
+
+                const payload = {
+                    secret: document.getElementById('secret').value,
+                    mode: document.getElementById('mode').value,
+                    parcelCode: document.getElementById('parcelCode').value.trim(),
+                    updateId: document.getElementById('updateId').value.trim() || undefined,
+                    data: {
+                        time: document.getElementById('time').value.trim(),
+                        event: document.getElementById('event').value.trim(),
+                        location: document.getElementById('location').value.trim()
+                    }
+                };
+
+                try {
+                    const res = await fetch(WRITE_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const body = await res.json().catch(() => ({}));
+                    if (!res.ok) throw body;
+                    writeStatus.textContent = 'Success';
+                    log('Write OK', body);
+                } catch (err) {
+                    writeStatus.textContent = 'Error';
+                    log('Write failed', err);
+                }
+            });
+
+            readForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                readStatus.textContent = 'Fetching...';
+                const code = document.getElementById('readCode').value.trim();
+                if (!code) {
+                    readStatus.textContent = 'Code required';
+                    return;
+                }
+                try {
+                    const res = await fetch(`${READ_URL}?code=${encodeURIComponent(code)}`);
+                    const body = await res.json().catch(() => ({}));
+                    if (!res.ok) throw body;
+                    readStatus.textContent = 'Done';
+                    renderUpdates(body.updates || body.data || []);
+                    log('Read OK', body);
+                } catch (err) {
+                    readStatus.textContent = 'Error';
+                    renderUpdates([]);
+                    log('Read failed', err);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
