@@ -4,5 +4,6 @@
   "private": true,
   "dependencies": {
     "@vercel/postgres": "^0.7.1"
-  }
+  },
+  "type": "module"
 }
