@@ -1,5 +1,16 @@
 {
   "version": 2,
+  "functions": {
+    "api/parcel-updates.js": {
+      "runtime": "nodejs20.x"
+    },
+    "api/track.js": {
+      "runtime": "nodejs20.x"
+    },
+    "api/carriers.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
   "routes": [
     { "src": "/api/track", "dest": "/api/track.js" },
     { "src": "/api/carriers", "dest": "/api/carriers.js" },
