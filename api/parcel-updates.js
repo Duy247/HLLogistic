@@ -1,5 +1,9 @@
 import { sql } from '@vercel/postgres';
 
+export const config = {
+  runtime: 'nodejs'
+};
+
 const SECRET = process.env.PARCEL_UPDATES_SECRET || '';
 
 function normalizeCode(code) {
