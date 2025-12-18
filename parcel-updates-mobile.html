@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>Parcel Updates Mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 16px; background: #f7f7f7; }
+        h1 { font-size: 20px; margin-bottom: 12px; }
+        .card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 16px; }
+        label { display: block; font-weight: 600; margin-bottom: 6px; }
+        input, select, button { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; box-sizing: border-box; }
+        button { border: none; cursor: pointer; }
+        .row { display: flex; gap: 10px; }
+        .row .col { flex: 1; }
+        .muted { color: #666; font-size: 13px; }
+        .status { margin-top: 8px; font-size: 14px; }
+        video { width: 100%; border-radius: 10px; background: #000; }
+        .actions { display: flex; gap: 10px; margin-top: 10px; }
+        .primary { background: #0d6efd; color: #fff; }
+        .secondary { background: #e9ecef; color: #000; }
+        .success { color: #198754; }
+        .error { color: #d63384; }
+        pre { background: #111; color: #eee; padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Parcel Updates (Mobile Scan)</h1>
+    <div class="card">
+        <label>Secret</label>
+        <input type="password" id="secret" placeholder="Nhập secret của bạn">
+        <div class="muted">Không lưu, chỉ gửi cùng yêu cầu.</div>
+    </div>
+
+    <div class="card">
+        <label>Mã vận đơn (quét hoặc nhập tay)</label>
+        <input type="text" id="parcelCode" placeholder="Chưa quét...">
+        <div class="muted" id="scan-status">Camera chưa chạy.</div>
+        <video id="preview" playsinline muted></video>
+        <div class="actions">
+            <button id="start-scan" class="secondary">Bật camera</button>
+            <button id="stop-scan" class="secondary">Tắt</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="row">
+            <div class="col">
+                <label>Thời gian (ISO)</label>
+                <input type="text" id="time">
+            </div>
+            <div class="col">
+                <label>Địa điểm</label>
+                <input type="text" id="location" value="Hà Nội">
+            </div>
+        </div>
+        <label>Sự kiện</label>
+        <input type="text" id="event" value="Nhập kho">
+    </div>
+
+    <div class="card">
+        <button id="send" class="primary">Gửi (CREATE)</button>
+        <div id="status" class="status muted"></div>
+    </div>
+
+    <div class="card">
+        <div class="muted">Log</div>
+        <pre id="log">Chưa gửi yêu cầu.</pre>
+    </div>
+
+    <script>
+        (function() {
+            const secretEl = document.getElementById('secret');
+            const codeEl = document.getElementById('parcelCode');
+            const timeEl = document.getElementById('time');
+            const locEl = document.getElementById('location');
+            const eventEl = document.getElementById('event');
+            const statusEl = document.getElementById('status');
+            const logEl = document.getElementById('log');
+            const preview = document.getElementById('preview');
+            const scanStatus = document.getElementById('scan-status');
+            const startBtn = document.getElementById('start-scan');
+            const stopBtn = document.getElementById('stop-scan');
+            const sendBtn = document.getElementById('send');
+
+            const API_BASE = (location.port === '5500') ? 'http://localhost:3000' : '';
+            const WRITE_URL = `${API_BASE}/api/parcel-updates`;
+
+            function setDefaultTime() {
+                const now = new Date();
+                timeEl.value = now.toISOString();
+            }
+            setDefaultTime();
+
+            function log(msg, data) {
+                const time = new Date().toISOString();
+                const body = data ? `\n${JSON.stringify(data, null, 2)}` : '';
+                logEl.textContent = `[${time}] ${msg}${body}`;
+            }
+
+            let stream;
+            let scanning = false;
+            let detector;
+
+            async function initDetector() {
+                if ('BarcodeDetector' in window) {
+                    const formats = ['code_128', 'code_39', 'code_93', 'ean_13', 'ean_8', 'qr_code', 'upc_a', 'upc_e', 'codabar', 'itf', 'aztec', 'data_matrix', 'pdf417'];
+                    detector = new window.BarcodeDetector({ formats });
+                    return true;
+                }
+                return false;
+            }
+
+            async function startScan() {
+                if (scanning) return;
+                const supported = await initDetector();
+                if (!supported) {
+                    scanStatus.textContent = 'Thiết bị không hỗ trợ BarcodeDetector. Nhập tay mã vận đơn.';
+                    return;
+                }
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: { ideal: 'environment' } },
+                        audio: false
+                    });
+                    preview.srcObject = stream;
+                    await preview.play();
+                    scanning = true;
+                    scanStatus.textContent = 'Đang quét...';
+                    requestAnimationFrame(tickScan);
+                } catch (err) {
+                    scanStatus.textContent = 'Không mở được camera. Cho phép quyền hoặc nhập tay.';
+                }
+            }
+
+            function stopScan() {
+                scanning = false;
+                if (stream) {
+                    stream.getTracks().forEach(t => t.stop());
+                    stream = null;
+                }
+                preview.pause();
+                preview.srcObject = null;
+                scanStatus.textContent = 'Camera dừng.';
+            }
+
+            async function tickScan() {
+                if (!scanning || !detector || preview.readyState < 2) return;
+                try {
+                    const barcodes = await detector.detect(preview);
+                    if (barcodes && barcodes.length) {
+                        const value = barcodes[0].rawValue || barcodes[0].rawData || barcodes[0].displayValue;
+                        if (value) {
+                            codeEl.value = value.trim();
+                            scanStatus.textContent = `Đã quét: ${value}`;
+                            stopScan();
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    scanStatus.textContent = 'Lỗi quét, thử lại hoặc nhập tay.';
+                }
+                if (scanning) requestAnimationFrame(tickScan);
+            }
+
+            startBtn.addEventListener('click', startScan);
+            stopBtn.addEventListener('click', stopScan);
+
+            sendBtn.addEventListener('click', async () => {
+                const payload = {
+                    secret: secretEl.value,
+                    mode: 'CREATE',
+                    parcelCode: codeEl.value.trim(),
+                    data: {
+                        time: timeEl.value.trim(),
+                        event: eventEl.value.trim() || 'Nhập kho',
+                        location: locEl.value.trim() || 'Hà Nội'
+                    }
+                };
+
+                if (!payload.secret) {
+                    statusEl.textContent = 'Nhập secret.';
+                    statusEl.className = 'status error';
+                    return;
+                }
+                if (!payload.parcelCode) {
+                    statusEl.textContent = 'Chưa có mã vận đơn.';
+                    statusEl.className = 'status error';
+                    return;
+                }
+
+                statusEl.textContent = 'Đang gửi...';
+                statusEl.className = 'status muted';
+                try {
+                    const res = await fetch(WRITE_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const body = await res.json().catch(() => ({}));
+                    if (!res.ok) throw body;
+                    statusEl.textContent = 'Đã gửi thành công';
+                    statusEl.className = 'status success';
+                    log('Write OK', body);
+                    setDefaultTime();
+                } catch (err) {
+                    statusEl.textContent = 'Lỗi gửi';
+                    statusEl.className = 'status error';
+                    log('Write failed', err);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
