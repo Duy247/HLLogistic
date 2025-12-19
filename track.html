@@ -115,9 +115,23 @@
                 return Number(match[0]);
             }
 
-            function formatDate(iso) {
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            function formatLocalTime(iso) {
                 if (!iso) return '';
-                return iso.replace('T', ' ').replace('Z', ' UTC');
+                const d = new Date(iso);
+                if (isNaN(d.getTime())) return iso;
+                const formatter = new Intl.DateTimeFormat(undefined, {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                    timeZone: userTimeZone,
+                    timeZoneName: 'short'
+                });
+                return formatter.format(d);
             }
 
             function formatResult(data) {
@@ -136,12 +150,12 @@
                     lines.push(`Hãng: ${providerName} (${carrierKey || 'auto'})`);
                     if (latestStatus?.status) lines.push(`Trạng thái: ${latestStatus.status}${latestStatus.sub_status ? ` / ${latestStatus.sub_status}` : ''}`);
                     if (latest?.description) lines.push(`Mới nhất: ${latest.description}`);
-                    if (latest?.time_iso) lines.push(`Thời gian: ${latest.time_iso}`);
+                    if (latest?.time_iso || latest?.time_utc) lines.push(`Thời gian: ${formatLocalTime(latest?.time_iso || latest?.time_utc)}`);
                     if (latest?.location) lines.push(`Vị trí: ${latest.location}`);
                     if (events.length) {
                         lines.push('--- Lịch sử ---');
                         events.slice(0, 10).forEach(ev => {
-                            const t = ev.time_iso || ev.time_utc || '';
+                            const t = formatLocalTime(ev.time_iso || ev.time_utc || '');
                             const loc = ev.location ? ` (${ev.location})` : '';
                             lines.push(`• ${t} – ${ev.description || ''}${loc}`);
                         });
@@ -176,12 +190,12 @@
                     </div>
                     <div class="mb-2">
                         <div class="fw-semibold">${latest?.description || ''}</div>
-                        <div class="text-muted small">${formatDate(latest?.time_iso || latest?.time_utc)}${latest?.location ? ` • ${latest.location}` : ''}</div>
+                        <div class="text-muted small">${formatLocalTime(latest?.time_iso || latest?.time_utc)}${latest?.location ? ` • ${latest.location}` : ''}</div>
                     </div>
                 `;
 
                 const list = events.slice(0, 15).map(ev => {
-                    const t = formatDate(ev.time_iso || ev.time_utc || '');
+                    const t = formatLocalTime(ev.time_iso || ev.time_utc || '');
                     const loc = ev.location ? ` • ${ev.location}` : '';
                     return `<li class="mb-1"><span class="text-muted">${t}</span> — ${ev.description || ''}${loc}</li>`;
                 }).join('');
@@ -207,14 +221,14 @@
                 if (!internalEl) return;
                 const updates = Array.isArray(list) ? list : [];
                 if (!updates.length) {
-                    internalEl.innerHTML = '<div class="text-muted">Chưa đến kho HL Logistics</div>';
+                    internalEl.innerHTML = '<div class="text-muted">Chưa có cập nhật nội bộ.</div>';
                     return;
                 }
                 const items = updates
                     .slice()
                     .sort((a, b) => new Date(b.time || b.createdAt || 0) - new Date(a.time || a.createdAt || 0))
                     .map(u => {
-                        const when = formatDate(u.time || u.createdAt);
+                        const when = formatLocalTime(u.time || u.createdAt);
                         const loc = u.location ? ` • ${u.location}` : '';
                         const title = u.event || u.description || 'Cập nhật';
                         return `<li class="mb-1"><span class="text-muted">${when}</span> — ${title}${loc}</li>`;
