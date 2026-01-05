@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <title>HL Trung Việt Logistics - News Admin</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Work+Sans:wght@500;600&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --admin-ink: #1a1f2a;
+            --admin-slate: #5d6b7a;
+            --admin-accent: #e06c2d;
+            --admin-surface: #ffffff;
+            --admin-muted: #eef1f5;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: radial-gradient(circle at top left, #f4f0ea, #f8fafc 40%, #ffffff 100%);
+            color: var(--admin-ink);
+        }
+
+        .admin-shell {
+            min-height: 100vh;
+            padding: 2.5rem 0 4rem;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-title {
+            font-size: clamp(1.8rem, 1.3rem + 2vw, 2.6rem);
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .admin-card {
+            background: var(--admin-surface);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(26, 31, 42, 0.08);
+            box-shadow: 0 18px 38px rgba(26, 31, 42, 0.08);
+        }
+
+        .admin-login {
+            max-width: 460px;
+            margin: 6rem auto 0;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+            gap: 1.5rem;
+        }
+
+        .post-list {
+            display: grid;
+            gap: 0.75rem;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 0.4rem;
+        }
+
+        .post-item {
+            border-radius: 14px;
+            border: 1px solid rgba(26, 31, 42, 0.08);
+            padding: 0.9rem 1rem;
+            background: #fff;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .post-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(26, 31, 42, 0.12);
+        }
+
+        .post-item.active {
+            border-color: var(--admin-accent);
+            box-shadow: 0 14px 26px rgba(224, 108, 45, 0.25);
+        }
+
+        .post-item h6 {
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .post-item span {
+            font-size: 0.85rem;
+            color: var(--admin-slate);
+        }
+
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .editor-toolbar .btn {
+            border-radius: 999px;
+        }
+
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .editor-layout.single {
+            grid-template-columns: 1fr;
+        }
+
+        .editor-pane {
+            background: var(--admin-muted);
+            border-radius: 16px;
+            padding: 1rem;
+            min-height: 360px;
+            overflow: auto;
+        }
+
+        .editor-pane textarea {
+            width: 100%;
+            height: 340px;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            resize: vertical;
+            font-family: "Courier New", monospace;
+            font-size: 0.95rem;
+        }
+
+        .preview-pane {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.2rem;
+            min-height: 340px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .status-text {
+            color: var(--admin-slate);
+            font-size: 0.95rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-shell">
+        <div class="container">
+            <div class="admin-header">
+                <div>
+                    <p class="text-uppercase text-muted mb-2">News Admin</p>
+                    <h1 class="admin-title">Quản lý bài viết HL News</h1>
+                    <p class="status-text">Đăng, chỉnh sửa và xuất bản tin tức từ cùng hệ thống vận hành.</p>
+                </div>
+                <div>
+                    <a href="news.html" class="btn btn-outline-secondary">Xem trang tin</a>
+                </div>
+            </div>
+
+            <div id="login-panel" class="admin-card admin-login">
+                <h4 class="mb-3">Đăng nhập quản trị</h4>
+                <p class="status-text mb-4">Sử dụng mã bí mật vận hành (PARCEL_UPDATES_SECRET).</p>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                    <input id="login-secret" type="password" class="form-control" placeholder="Nhập secret">
+                </div>
+                <button id="login-btn" class="btn btn-primary w-100">Đăng nhập</button>
+                <div id="login-status" class="status-text mt-3"></div>
+            </div>
+
+            <div id="admin-panel" class="admin-grid hidden">
+                <div class="admin-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="mb-0">Danh sách bài</h5>
+                        <button id="new-post" class="btn btn-sm btn-outline-primary">Bài mới</button>
+                    </div>
+                    <div id="post-list" class="post-list"></div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="editor-toolbar">
+                        <button id="save-post" class="btn btn-primary"><i class="fa fa-save me-2"></i>Lưu</button>
+                        <button id="delete-post" class="btn btn-outline-danger"><i class="fa fa-trash me-2"></i>Xóa</button>
+                        <button id="mode-split" class="btn btn-outline-secondary">Split</button>
+                        <button id="mode-code" class="btn btn-outline-secondary">Code</button>
+                        <button id="mode-preview" class="btn btn-outline-secondary">Preview</button>
+                        <span id="editor-status" class="status-text"></span>
+                    </div>
+
+                    <div class="meta-grid mb-4">
+                        <div>
+                            <label class="form-label">Tiêu đề</label>
+                            <input id="post-title" type="text" class="form-control" placeholder="Tiêu đề bài viết">
+                        </div>
+                        <div>
+                            <label class="form-label">Slug</label>
+                            <input id="post-slug" type="text" class="form-control" placeholder="tu-khoa-bai-viet">
+                        </div>
+                        <div>
+                            <label class="form-label">Cover URL</label>
+                            <input id="post-cover" type="text" class="form-control" placeholder="https://...">
+                        </div>
+                        <div>
+                            <label class="form-label">Ngày xuất bản</label>
+                            <input id="post-published" type="datetime-local" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Tóm tắt</label>
+                        <textarea id="post-summary" class="form-control" rows="3" placeholder="Tóm tắt bài viết"></textarea>
+                    </div>
+
+                    <div id="editor-layout" class="editor-layout">
+                        <div class="editor-pane">
+                            <label class="form-label">HTML Code</label>
+                            <textarea id="post-content" placeholder="<h2>Tiêu đề</h2>..."></textarea>
+                        </div>
+                        <div class="editor-pane">
+                            <label class="form-label">Preview</label>
+                            <div id="post-preview" class="preview-pane"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/news-admin.js"></script>
+</body>
+
+</html>

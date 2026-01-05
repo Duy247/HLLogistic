@@ -4,7 +4,7 @@ export const config = {
   runtime: 'nodejs'
 };
 
-const SECRET = process.env.NEWS_SECRET || '';
+const SECRET = process.env.PARCEL_UPDATES_SECRET || '';
 
 function allowCors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -82,7 +82,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST' && req.method !== 'PUT' && req.method !== 'DELETE') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
@@ -100,12 +100,67 @@ export default async function handler(req, res) {
       return;
     }
 
+    if (req.method === 'DELETE') {
+      const id = Number.parseInt(body.id, 10);
+      if (Number.isNaN(id)) {
+        res.status(400).json({ error: 'id is required' });
+        return;
+      }
+      const { rows } = await sql`
+        delete from news
+        where id = ${id}
+        returning id
+      `;
+      if (!rows.length) {
+        res.status(404).json({ error: 'Post not found' });
+        return;
+      }
+      res.status(200).json({ removed: rows[0] });
+      return;
+    }
+
     const title = String(body.title || '').trim();
     const summary = String(body.summary || '').trim();
     const coverUrl = String(body.coverUrl || '').trim();
     const contentHtml = String(body.contentHtml || '').trim();
     const publishedAt = body.publishedAt || null;
     const slug = String(body.slug || '').trim() || slugify(title);
+
+    if (req.method === 'PUT') {
+      const id = Number.parseInt(body.id, 10);
+      if (Number.isNaN(id)) {
+        res.status(400).json({ error: 'id is required' });
+        return;
+      }
+      if (!title || !contentHtml) {
+        res.status(400).json({ error: 'title and contentHtml are required' });
+        return;
+      }
+      const { rows } = await sql`
+        update news
+        set title = ${title},
+            summary = ${summary || null},
+            cover_url = ${coverUrl || null},
+            content_html = ${contentHtml},
+            slug = ${slug || null},
+            published_at = coalesce(${publishedAt}, published_at),
+            updated_at = now()
+        where id = ${id}
+        returning id,
+                  title,
+                  summary,
+                  cover_url as "coverUrl",
+                  slug,
+                  published_at as "publishedAt",
+                  updated_at as "updatedAt"
+      `;
+      if (!rows.length) {
+        res.status(404).json({ error: 'Post not found' });
+        return;
+      }
+      res.status(200).json({ post: rows[0] });
+      return;
+    }
 
     if (!title || !contentHtml) {
       res.status(400).json({ error: 'title and contentHtml are required' });
@@ -126,6 +181,6 @@ export default async function handler(req, res) {
 
     res.status(200).json({ post: rows[0] });
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to create post' });
+    res.status(500).json({ error: err.message || 'Failed to save post' });
   }
 }
