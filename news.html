@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <title>HL Trung Việt Logistics - Tin tức</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        :root {
+            --news-ink: #1b2633;
+            --news-muted: #6b7683;
+            --news-accent: #d16a27;
+            --news-forest: #1c3b2a;
+            --news-cream: #f7f2ea;
+            --news-sand: #ede3d4;
+        }
+
+        .news-hero {
+            position: relative;
+            color: #fff;
+            padding: 4rem 0;
+            background: radial-gradient(circle at 10% 20%, rgba(209, 106, 39, 0.35), transparent 55%),
+                radial-gradient(circle at 80% 20%, rgba(28, 59, 42, 0.6), transparent 50%),
+                linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            overflow: hidden;
+        }
+
+        .news-hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -10% -30% -10%;
+            height: 220px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent);
+            transform: skewY(-4deg);
+        }
+
+        .news-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .news-title {
+            font-size: clamp(2.4rem, 2.2rem + 1.6vw, 3.6rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0.75rem 0 1rem;
+        }
+
+        .news-subtitle {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 1.05rem;
+        }
+
+        .news-hero-card {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 18px;
+            padding: 1.5rem;
+            backdrop-filter: blur(6px);
+        }
+
+        .news-board {
+            background: linear-gradient(180deg, var(--news-cream), #fff 45%);
+        }
+
+        .news-section-title {
+            font-weight: 700;
+            color: var(--news-ink);
+        }
+
+        .news-list {
+            display: grid;
+            gap: 1.4rem;
+        }
+
+        .news-card {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(0, 2fr);
+            gap: 1.4rem;
+            padding: 1.5rem;
+            border-radius: 20px;
+            background: #fff;
+            border: 1px solid rgba(27, 38, 51, 0.08);
+            box-shadow: 0 15px 30px rgba(27, 38, 51, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 34px rgba(27, 38, 51, 0.15);
+        }
+
+        .news-card__media {
+            border-radius: 16px;
+            min-height: 160px;
+            background: linear-gradient(135deg, var(--news-sand), #fff);
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+            color: var(--news-forest);
+            font-weight: 700;
+        }
+
+        .news-card__media.has-image {
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+        }
+
+        .news-card__meta {
+            color: var(--news-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .news-card__title {
+            display: inline-block;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--news-ink);
+            text-decoration: none;
+        }
+
+        .news-card__title:hover {
+            color: var(--news-accent);
+        }
+
+        .news-card__summary {
+            color: #4b5563;
+            margin: 0.8rem 0 0;
+        }
+
+        .news-detail {
+            border-radius: 24px;
+            padding: 2rem;
+            background: #fff;
+            box-shadow: 0 18px 34px rgba(27, 38, 51, 0.1);
+            border: 1px solid rgba(27, 38, 51, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .news-detail.is-hidden {
+            display: none;
+        }
+
+        .news-detail__meta {
+            color: var(--news-muted);
+            font-size: 0.95rem;
+        }
+
+        .news-detail__content {
+            margin-top: 1.5rem;
+            color: #2f3b48;
+            line-height: 1.7;
+        }
+
+        .news-detail__content img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .news-sidebar {
+            position: sticky;
+            top: 110px;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .news-panel {
+            border-radius: 20px;
+            padding: 1.5rem;
+            background: #fff;
+            border: 1px solid rgba(27, 38, 51, 0.08);
+            box-shadow: 0 12px 24px rgba(27, 38, 51, 0.08);
+        }
+
+        .news-panel__title {
+            font-weight: 700;
+            color: var(--news-ink);
+            margin-bottom: 0.75rem;
+        }
+
+        .news-status {
+            color: var(--news-muted);
+            font-size: 0.95rem;
+            margin-top: 1rem;
+        }
+
+        .news-load {
+            border-radius: 999px;
+            padding: 0.9rem 2.2rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .news-card {
+                grid-template-columns: 1fr;
+            }
+
+            .news-sidebar {
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Navbar Start -->
+    <div id="navbar"></div>
+    <!-- Navbar End -->
+
+
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header py-5" style="margin-bottom: 0;">
+        <div class="container py-5">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Tin tức</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a class="text-white" href="#">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a class="text-white" href="#">Trang</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Tin tức</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- News Board Start -->
+    <section class="news-board py-5">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-8">
+                    <div id="news-detail" class="news-detail is-hidden">
+                        <button id="news-detail-back" class="btn btn-outline-secondary mb-3" type="button">
+                            <i class="fa fa-arrow-left me-2"></i>Quay lại danh sách
+                        </button>
+                        <h2 id="news-detail-title" class="news-section-title mb-2">...</h2>
+                        <div id="news-detail-meta" class="news-detail__meta">...</div>
+                        <div id="news-detail-content" class="news-detail__content"></div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h3 class="news-section-title mb-0">Bài viết mới nhất</h3>
+                        <span id="news-count" class="news-detail__meta">Đang tải...</span>
+                    </div>
+
+                    <div id="news-list" class="news-list"></div>
+
+                    <div class="text-center mt-4">
+                        <button id="news-load-more" class="btn btn-primary news-load" type="button">Xem thêm</button>
+                        <div id="news-status" class="news-status"></div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="news-sidebar">
+                        <div class="news-panel">
+                            <div class="news-panel__title">Chủ đề nổi bật</div>
+                            <div class="d-flex flex-column gap-2 text-muted">
+                                <span>• Lịch thông quan tuần</span>
+                                <span>• Đổi lịch kho Bằng Tường</span>
+                                <span>• Update tuyến bay nhanh</span>
+                                <span>• Mức cước tối ưu</span>
+                            </div>
+                        </div>
+                        <div class="news-panel" style="background: var(--news-cream);">
+                            <div class="news-panel__title">Nhận bản tin</div>
+                            <p class="text-muted">Nhận bản tin mới nhất về lịch vận chuyển, ưu đãi và cập nhật kho.</p>
+                            <div class="position-relative">
+                                <input class="form-control border-0 py-3 ps-4 pe-5" type="text" placeholder="Email của bạn">
+                                <button type="button" class="btn btn-primary position-absolute top-0 end-0 mt-2 me-2">Đăng ký</button>
+                            </div>
+                        </div>
+                        <div class="news-panel">
+                            <div class="news-panel__title">Đăng bài mới</div>
+                            <p class="text-muted mb-0">Bộ phận vận hành có thể đẩy tin ngay khi phát sinh thay đổi lịch vận.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- News Board End -->
+        
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 wow fadeIn" data-wow-delay="0.1s" style="margin-top: 6rem;">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-light mb-4">Thông tin</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>D10-12 KĐT Geleximco, Lê Trọng Tấn, Hà Đông, Hà Nội</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0966 862 355</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@hltrungviet.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-light mb-4">Dịch vụ</h4>
+                    <a class="btn btn-link" href="">Vận chuyển Trung - Việt</a>
+                    <a class="btn btn-link" href="">Thông quan 2 đầu</a>
+                    <a class="btn btn-link" href="">Đánh cont từ xưởng</a>
+                    <a class="btn btn-link" href="">Kho bãi chính chủ</a>
+                    <a class="btn btn-link" href="">Tư vấn cước tối ưu</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-light mb-4">Liên kết</h4>
+                    <a class="btn btn-link" href="">Giới thiệu</a>
+                    <a class="btn btn-link" href="">Liên hệ</a>
+                    <a class="btn btn-link" href="">Bảng giá</a>
+                    <a class="btn btn-link" href="">Chính sách</a>
+                    <a class="btn btn-link" href="">Hỗ trợ</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-light mb-4">Nhận thông tin</h4>
+                    <p>Cập nhật lịch vận chuyển, ưu đãi và thông tin kho bãi.</p>
+                    <div class="position-relative mx-auto" style="max-width: 400px;">
+                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Email của bạn">
+                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">Đăng ký</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">HL Trung Việt Logistics</a>, All Right Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                        Designed By <a class="border-bottom" href="https://htmlcodex.com">Duy Van</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="js/includes.js"></script>
+    <script src="js/news.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
