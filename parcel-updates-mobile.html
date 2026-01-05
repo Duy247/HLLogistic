@@ -8,6 +8,7 @@
         body { font-family: Arial, sans-serif; margin: 0; padding: 16px; background: #f7f7f7; }
         h1 { font-size: 20px; margin-bottom: 12px; }
         .card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 16px; }
+        .scan-card { position: relative; }
         label { display: block; font-weight: 600; margin-bottom: 6px; }
         input, select, button { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; box-sizing: border-box; }
         button { border: none; cursor: pointer; }
@@ -22,28 +23,53 @@
         .success { color: #198754; }
         .error { color: #d63384; }
         pre { background: #111; color: #eee; padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+        .scan-actions { display: none; gap: 10px; margin-top: 10px; }
+        .scan-actions.active { display: flex; }
+        .retreat-toggle { display: none; margin-top: 10px; }
+        @media (max-width: 640px) {
+            .retreat-toggle { display: block; }
+            body.is-retreated .config-card,
+            body.is-retreated .log-card { display: none; }
+            body.is-retreated .scan-card { margin-bottom: 0; }
+            body.is-retreated .scan-inputs { display: none; }
+            body.is-retreated { padding: 0; background: #000; }
+            body.is-retreated h1 { display: none; }
+            body.is-retreated .scan-card { border-radius: 0; box-shadow: none; padding: 0; background: #000; }
+            body.is-retreated video { border-radius: 0; height: 100vh; object-fit: cover; }
+            body.is-retreated .scan-controls { padding: 12px; background: rgba(0,0,0,0.6); position: absolute; bottom: 0; left: 0; right: 0; }
+            body.is-retreated .scan-actions.active { display: flex; }
+        }
     </style>
 </head>
 <body>
     <h1>Parcel Updates (Mobile Scan)</h1>
-    <div class="card">
+    <div class="card config-card">
         <label>Secret</label>
         <input type="password" id="secret" placeholder="Nhập secret của bạn">
         <div class="muted">Không lưu, chỉ gửi cùng yêu cầu.</div>
     </div>
 
-    <div class="card">
-        <label>Mã vận đơn (quét hoặc nhập tay)</label>
-        <input type="text" id="parcelCode" placeholder="Chưa quét...">
+    <div class="card scan-card">
+        <div class="scan-inputs">
+            <label>Mã vận đơn (quét hoặc nhập tay)</label>
+            <input type="text" id="parcelCode" placeholder="Chưa quét...">
+        </div>
         <div class="muted" id="scan-status">Camera chưa chạy.</div>
         <video id="preview" playsinline muted></video>
-        <div class="actions">
-            <button id="start-scan" class="secondary">Bật camera</button>
-            <button id="stop-scan" class="secondary">Tắt</button>
+        <div class="scan-controls">
+            <div class="actions">
+                <button id="start-scan" class="secondary">Bật camera</button>
+                <button id="stop-scan" class="secondary">Tắt</button>
+            </div>
+            <div id="scan-actions" class="scan-actions">
+                <button id="rescan" class="secondary">Quét lại</button>
+                <button id="send-scan" class="primary">Gửi yêu cầu</button>
+            </div>
+            <button id="retreat-toggle" class="secondary retreat-toggle">Thu gọn cấu hình</button>
         </div>
     </div>
 
-    <div class="card">
+    <div class="card config-card">
         <div class="row">
             <div class="col">
                 <label>Thời gian (ISO)</label>
@@ -58,12 +84,12 @@
         <input type="text" id="event" value="Nhập kho">
     </div>
 
-    <div class="card">
+    <div class="card config-card">
         <button id="send" class="primary">Gửi (CREATE)</button>
         <div id="status" class="status muted"></div>
     </div>
 
-    <div class="card">
+    <div class="card log-card">
         <div class="muted">Log</div>
         <pre id="log">Chưa gửi yêu cầu.</pre>
     </div>
@@ -81,6 +107,10 @@
             const scanStatus = document.getElementById('scan-status');
             const startBtn = document.getElementById('start-scan');
             const stopBtn = document.getElementById('stop-scan');
+            const rescanBtn = document.getElementById('rescan');
+            const sendScanBtn = document.getElementById('send-scan');
+            const scanActions = document.getElementById('scan-actions');
+            const retreatToggle = document.getElementById('retreat-toggle');
             const sendBtn = document.getElementById('send');
 
             const API_BASE = (location.port === '5500') ? 'http://localhost:3000' : '';
@@ -90,7 +120,16 @@
                 const now = new Date();
                 timeEl.value = now.toISOString();
             }
-            setDefaultTime();
+
+            function startClock() {
+                setDefaultTime();
+                setInterval(() => {
+                    if (document.activeElement !== timeEl) {
+                        setDefaultTime();
+                    }
+                }, 1000);
+            }
+            startClock();
 
             function log(msg, data) {
                 const time = new Date().toISOString();
@@ -127,13 +166,14 @@
                     await preview.play();
                     scanning = true;
                     scanStatus.textContent = 'Đang quét...';
+                    scanActions.classList.remove('active');
                     requestAnimationFrame(tickScan);
                 } catch (err) {
                     scanStatus.textContent = 'Không mở được camera. Cho phép quyền hoặc nhập tay.';
                 }
             }
 
-            function stopScan() {
+            function stopScan(reason) {
                 scanning = false;
                 if (stream) {
                     stream.getTracks().forEach(t => t.stop());
@@ -141,7 +181,10 @@
                 }
                 preview.pause();
                 preview.srcObject = null;
-                scanStatus.textContent = 'Camera dừng.';
+                if (reason !== 'scanned') {
+                    scanStatus.textContent = 'Camera dừng.';
+                    scanActions.classList.remove('active');
+                }
             }
 
             async function tickScan() {
@@ -153,7 +196,8 @@
                         if (value) {
                             codeEl.value = value.trim();
                             scanStatus.textContent = `Đã quét: ${value}`;
-                            stopScan();
+                            stopScan('scanned');
+                            scanActions.classList.add('active');
                             return;
                         }
                     }
@@ -164,9 +208,18 @@
             }
 
             startBtn.addEventListener('click', startScan);
-            stopBtn.addEventListener('click', stopScan);
+            stopBtn.addEventListener('click', () => stopScan());
+            rescanBtn.addEventListener('click', () => {
+                codeEl.value = '';
+                startScan();
+            });
 
-            sendBtn.addEventListener('click', async () => {
+            retreatToggle.addEventListener('click', () => {
+                const isRetreated = document.body.classList.toggle('is-retreated');
+                retreatToggle.textContent = isRetreated ? 'Hiện cấu hình' : 'Thu gọn cấu hình';
+            });
+
+            async function sendRequest() {
                 const payload = {
                     secret: secretEl.value,
                     mode: 'CREATE',
@@ -208,7 +261,10 @@
                     statusEl.className = 'status error';
                     log('Write failed', err);
                 }
-            });
+            }
+
+            sendBtn.addEventListener('click', sendRequest);
+            sendScanBtn.addEventListener('click', sendRequest);
         })();
     </script>
 </body>
