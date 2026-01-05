@@ -27,31 +27,37 @@
     
     
     // Dropdown on mouse hover
-    const $dropdown = $(".dropdown");
-    const $dropdownToggle = $(".dropdown-toggle");
-    const $dropdownMenu = $(".dropdown-menu");
-    const showClass = "show";
-    
-    $(window).on("load resize", function() {
-        if (this.matchMedia("(min-width: 992px)").matches) {
-            $dropdown.hover(
-            function() {
-                const $this = $(this);
-                $this.addClass(showClass);
-                $this.find($dropdownToggle).attr("aria-expanded", "true");
-                $this.find($dropdownMenu).addClass(showClass);
-            },
-            function() {
-                const $this = $(this);
-                $this.removeClass(showClass);
-                $this.find($dropdownToggle).attr("aria-expanded", "false");
-                $this.find($dropdownMenu).removeClass(showClass);
-            }
-            );
-        } else {
-            $dropdown.off("mouseenter mouseleave");
-        }
-    });
+    window.initNavbarInteractions = function () {
+        const showClass = "show";
+
+        $(window)
+            .off("load.navbar resize.navbar")
+            .on("load.navbar resize.navbar", function () {
+                const $dropdown = $(".dropdown");
+                const $dropdownToggle = $(".dropdown-toggle");
+                const $dropdownMenu = $(".dropdown-menu");
+
+                if (this.matchMedia("(min-width: 992px)").matches) {
+                    $dropdown
+                        .off("mouseenter.navbar mouseleave.navbar")
+                        .on("mouseenter.navbar", function () {
+                            const $this = $(this);
+                            $this.addClass(showClass);
+                            $this.find($dropdownToggle).attr("aria-expanded", "true");
+                            $this.find($dropdownMenu).addClass(showClass);
+                        })
+                        .on("mouseleave.navbar", function () {
+                            const $this = $(this);
+                            $this.removeClass(showClass);
+                            $this.find($dropdownToggle).attr("aria-expanded", "false");
+                            $this.find($dropdownMenu).removeClass(showClass);
+                        });
+                } else {
+                    $dropdown.off("mouseenter.navbar mouseleave.navbar");
+                }
+            });
+    };
+    window.initNavbarInteractions();
     
     
     // Back to top button
@@ -111,4 +117,3 @@
     });
     
 })(jQuery);
-
