@@ -422,11 +422,13 @@
 /*** Testimonial ***/
 .testimonial-carousel .owl-item .testimonial-item {
     position: relative;
+    background-color: #beddb2;
     transition: .5s;
 }
 
 .testimonial-carousel .owl-item.center .testimonial-item {
-    box-shadow: 0 0 45px rgba(0, 0, 0, .08);
+    box-shadow: 0 0 45px rgba(0, 0, 0, .3);
+    background-color: #beddb2;
     animation: pulse 1s ease-out .5s;
 }
 
