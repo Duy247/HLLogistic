@@ -81,6 +81,32 @@
     });
 
 
+    // Mailto forms with UTF-8-safe body
+    (function initMailtoForms() {
+        const forms = document.querySelectorAll('form[data-mailto]');
+        if (!forms.length) return;
+        forms.forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const to = form.getAttribute('data-mailto');
+                if (!to) return;
+                const subject = form.getAttribute('data-subject') || 'Lien he';
+                const data = new FormData(form);
+                const lines = [];
+                data.forEach((value, key) => {
+                    const safeValue = String(value || '').trim();
+                    if (safeValue) {
+                        lines.push(`${key}=${safeValue}`);
+                    }
+                });
+                const body = lines.join('\n');
+                const url = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.location.href = url;
+            });
+        });
+    })();
+
+
     // Header carousel
     $(".header-carousel").owlCarousel({
         autoplay: false,
