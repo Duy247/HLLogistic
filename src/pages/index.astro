@@ -1,0 +1,593 @@
+---
+import LegacyScripts from '../components/LegacyScripts.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+<BaseLayout title="HL TRUNGVIET LOGISTICS" bodyClass="" standardHead={true}>
+
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Navbar Start -->
+    <Navbar />
+    <!-- Navbar End -->
+
+
+    <!-- Carousel Start -->
+    <div class="container-fluid p-0 pb-5">
+        <div class="owl-carousel header-carousel position-relative mb-5">
+            <div class="owl-carousel-item position-relative">
+                <img class="img-fluid" src="img/carousel-1.jpg" alt="">
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(6, 3, 21, .5);">
+                    <div class="container">
+                        <div class="row justify-content-start">
+                            <div class="col-10 col-lg-8">
+                                <h5 class="text-white text-uppercase mb-3 animated slideInDown">Giải pháp vận chuyển Trung - Việt</h5>
+                                <h1 class="display-3 text-white animated slideInDown mb-4">HL TrungViet Logistics <br><span class="text-primary">trọn gói</span> &amp; minh bạch</h1>
+                                <p class="fs-5 fw-medium text-white mb-4 pb-2">Vận chuyển hàng Trung Quốc về Việt Nam, mua hàng hộ, thanh toán hộ và tư vấn nhập hàng chuyên sâu.</p>
+                                <a href="" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Tìm hiểu thêm</a>
+                                <a href="" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Nhận báo giá</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="owl-carousel-item position-relative">
+                <img class="img-fluid" src="img/carousel-2.jpg" alt="">
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(6, 3, 21, .5);">
+                    <div class="container">
+                        <div class="row justify-content-start">
+                            <div class="col-10 col-lg-8">
+                                <h5 class="text-white text-uppercase mb-3 animated slideInDown">Giao hàng đúng cam kết</h5>
+                                <h1 class="display-3 text-white animated slideInDown mb-4">Giải pháp <span class="text-primary">an toàn</span> &amp; chủ động</h1>
+                                <p class="fs-5 fw-medium text-white mb-4 pb-2">Tối ưu chuỗi cung ứng với lộ trình tối ưu, minh bạch chi phí, theo dõi trạng thái và hỗ trợ 24/7.</p>
+                                <a href="" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Xem dịch vụ</a>
+                                <a href="" class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Yêu cầu tư vấn</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Carousel End -->
+
+
+    <!-- Tracking Start -->
+    <div class="container-xxl py-5 bg-light track-section" id="track">
+        <div class="container py-5">
+            <div class="row g-4 align-items-center wow fadeInUp" data-wow-delay="0.1s">
+                <div class="col-lg-6 tracking-hero text-white wow fadeInLeft" data-wow-delay="0.2s">
+                    <h6 class="text-secondary text-uppercase mb-3">Theo dõi đơn</h6>
+                    <h1 class="mb-4">Tra cứu vận đơn Trung - Việt</h1>
+                    <p class="mb-4">Nhập mã vận đơn (YunExpress, 4PX, Cainiao, J&amp;T, China Post...) để kiểm tra trạng thái. Kết nối API công khai của nhà vận chuyển phổ biến.</p>
+                    <ul class="mb-0">
+                        <li>Mã ví dụ: SYZZ036501740 (SUNYOU)</li>
+                        <li>Chọn hãng để giúp định tuyến truy vấn chính xác hơn.</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.2s">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body">
+                            <form id="tracking-form" class="row g-3" action="track.html" method="get">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold" for="tracking-number">Mã vận đơn</label>
+                                    <input type="text" class="form-control" id="tracking-number" name="number" placeholder="Nhập mã (ví dụ: YT...)" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold" for="carrier">Hãng vận chuyển (tùy chọn)</label>
+                                    <input list="carrier-list" class="form-control" id="carrier-input" name="carrierText" placeholder="Gõ tên hoặc mã (ví dụ: YunExpress, 100003)">
+                                    <datalist id="carrier-list"></datalist>
+                                    <div class="form-text">Tự động nếu bỏ trống. Chọn từ danh sách để định tuyến chính xác hơn.</div>
+                                </div>
+                                <div class="col-12 d-flex align-items-center">
+                                    <button type="submit" class="btn btn-primary me-3">Tra cứu</button>
+                                    <span id="tracking-status" class="text-secondary small"></span>
+                                </div>
+                                <div class="col-12">
+                                    <div class="bg-light border rounded p-3" style="min-height: 40px;">
+                                        <div class="fw-semibold mb-2">Kết quả</div>
+                                        <div class="text-muted small">Bạn sẽ được chuyển tới trang tra cứu chi tiết sau khi bấm "Tra cứu".</div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Tracking End -->
+
+
+    <!-- About Start -->
+    <div class="container-fluid overflow-hidden py-5 px-lg-0 striped-section" id="aboutUs">
+        <div class="container about py-5 px-lg-0">
+            <div class="row g-5 mx-lg-0">
+                <div class="col-lg-6 ps-lg-0 wow fadeInLeft" data-wow-delay="0.1s" style="min-height: 400px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute img-fluid w-100 h-100" src="img/about.jpg" style="object-fit: cover;" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6 about-text wow fadeInUp" data-wow-delay="0.3s">
+                    <h6 class="text-secondary text-uppercase mb-3">Về chúng tôi</h6>
+                    <h1 class="mb-5">HL TrungViet Logistics: Hơn một dịch vụ vận chuyển</h1>
+                    <p class="mb-5">HL TrungViet cung cấp giải pháp trọn gói từ vận chuyển hàng hóa Trung Quốc về Việt Nam, mua hàng hộ, thanh toán hộ đến tư vấn nhập hàng chuyên sâu, giúp tối ưu chuỗi cung ứng của bạn.</p>
+                    <div class="row g-4 mb-5">
+                        <div class="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
+                            <i class="fa fa-globe fa-3x text-primary mb-3"></i>
+                            <h5>Kết nối Trung - Việt</h5>
+                            <p class="m-0">Giao hàng đúng thời gian, đúng địa điểm, đúng cam kết.</p>
+                        </div>
+                        <div class="col-sm-6 wow fadeIn" data-wow-delay="0.7s">
+                            <i class="fa fa-shipping-fast fa-3x text-primary mb-3"></i>
+                            <h5>Minh bạch &amp; chủ động</h5>
+                            <p class="m-0">Theo dõi lộ trình, báo trạng thái và hỗ trợ kịp thời khi phát sinh.</p>
+                        </div>
+                    </div>
+                    <a href="" class="btn btn-primary py-3 px-5">Tìm hiểu thêm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+
+
+    <!-- Fact Start -->
+    <div class="container-xxl py-5 striped-section">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase mb-3">Tầm nhìn &amp; cam kết</h6>
+                    <h1 class="mb-5">Trở thành đơn vị vận chuyển Trung – Việt hàng đầu</h1>
+                    <p class="mb-5">Định hình chuẩn mực an toàn – tốc độ – minh bạch trong logistics xuyên biên giới, đồng thời đồng hành lâu dài cùng khách hàng và đối tác.</p>
+                    <div class="d-flex align-items-center">
+                        <i class="fa fa-headphones fa-2x flex-shrink-0 bg-primary p-3"></i>
+                        <div class="ps-4">
+                            <h6>Hotline hỗ trợ 24/7</h6>
+                            <h3 class="text-primary m-0">0966 862 355</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-sm-6">
+                            <div class="bg-primary p-4 mb-4 wow fadeIn" data-wow-delay="0.3s">
+                                <i class="fa fa-users fa-2x mb-3"></i>
+                                <h2 class="mb-2" data-toggle="counter-up">6826</h2>
+                                <p class="mb-0">Khách hàng hài lòng</p>
+                            </div>
+                            <div class="bg-secondary p-4 wow fadeIn" data-wow-delay="0.5s">
+                                <i class="fa fa-ship fa-2x text-white mb-3"></i>
+                                <h2 class="text-white mb-2" data-toggle="counter-up">38639</h2>
+                                <p class="text-white mb-0">Lô hàng hoàn thành</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bg-success p-4 wow fadeIn" data-wow-delay="0.7s">
+                                <i class="fa fa-star fa-2x text-white mb-3"></i>
+                                <h2 class="text-white mb-2" data-toggle="counter-up">59286</h2>
+                                <p class="text-white mb-0">Đánh giá tích cực</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fact End -->
+
+
+    <!-- Service Start -->
+    <div class="container-xxl py-5 striped-section">
+        <div class="container py-5">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-secondary text-uppercase">Dịch vụ</h6>
+                <h1 class="mb-5">Giải pháp trọn gói của HL TrungViet Logistics</h1>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item p-4">
+                        <div class="overflow-hidden mb-4">
+                            <img class="img-fluid" src="img/service-1.jpg" alt="">
+                        </div>
+                        <h4 class="mb-3">Vận chuyển hàng hóa</h4>
+                        <p>An toàn, nhanh chóng, hiệu quả với lộ trình tối ưu từ Trung Quốc về Việt Nam.</p>
+                        <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span>Xem chi tiết</span></a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="service-item p-4">
+                        <div class="overflow-hidden mb-4">
+                            <img class="img-fluid" src="img/service-2.jpg" alt="">
+                        </div>
+                        <h4 class="mb-3">Mua hàng hộ</h4>
+                        <p>Hỗ trợ tìm kiếm, đặt mua sản phẩm, kiểm hàng tại kho Trung Quốc.</p>
+                        <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span>Xem chi tiết</span></a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="service-item p-4">
+                        <div class="overflow-hidden mb-4">
+                            <img class="img-fluid" src="img/service-3.jpg" alt="">
+                        </div>
+                        <h4 class="mb-3">Thanh toán hộ</h4>
+                        <p>Giao dịch an toàn, tiện lợi, hỗ trợ đa nền tảng và phương thức.</p>
+                        <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span>Xem chi tiết</span></a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item p-4">
+                        <div class="overflow-hidden mb-4">
+                            <img class="img-fluid" src="img/service-4.jpg" alt="">
+                        </div>
+                        <h4 class="mb-3">Tư vấn nhập hàng</h4>
+                        <p>Đề xuất giải pháp tối ưu chi phí, thời gian và thủ tục cho từng mặt hàng.</p>
+                        <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span>Xem chi tiết</span></a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="service-item p-4">
+                        <div class="overflow-hidden mb-4">
+                            <img class="img-fluid" src="img/service-5.jpg" alt="">
+                        </div>
+                        <h4 class="mb-3">Kho bãi &amp; nhân sự</h4>
+                        <p>Hệ thống kho bãi an toàn, đội ngũ chuyên nghiệp, xử lý linh hoạt theo nhu cầu.</p>
+                        <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span>Xem chi tiết</span></a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="service-item p-4">
+                        <div class="overflow-hidden mb-4">
+                            <img class="img-fluid" src="img/service-6.jpg" alt="">
+                        </div>
+                        <h4 class="mb-3">Hỗ trợ 24/7</h4>
+                        <p>Đội ngũ tư vấn viên luôn sẵn sàng giải đáp và xử lý yêu cầu nhanh chóng.</p>
+                        <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span>Xem chi tiết</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+
+
+    <!-- Feature Start -->
+    <div class="container-fluid overflow-hidden py-5 px-lg-0 striped-section">
+        <div class="container feature py-5 px-lg-0">
+            <div class="row g-5 mx-lg-0">
+                <div class="col-lg-6 feature-text wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase mb-3">Điểm mạnh</h6>
+                    <h1 class="mb-5">Đối tác logistics đáng tin cậy</h1>
+                    <div class="d-flex mb-5 wow fadeInUp" data-wow-delay="0.3s">
+                        <i class="fa fa-globe text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>Minh bạch chi phí</h5>
+                            <p class="mb-0">Bảng giá rõ ràng, cập nhật liên tục, tối ưu cho từng phương án vận chuyển.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-5 wow fadeIn" data-wow-delay="0.5s">
+                        <i class="fa fa-shipping-fast text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>Đúng tiến độ</h5>
+                            <p class="mb-0">Theo dõi lộ trình, báo trạng thái chủ động, giao hàng đúng cam kết.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-0 wow fadeInUp" data-wow-delay="0.7s">
+                        <i class="fa fa-headphones text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>Hỗ trợ 24/7</h5>
+                            <p class="mb-0">Tư vấn viên sẵn sàng giải đáp, xử lý phát sinh bất cứ lúc nào.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s" style="min-height: 400px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute img-fluid w-100 h-100" src="img/feature.jpg" style="object-fit: cover;" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Feature End -->
+
+
+    <!-- Pricing Start -->
+    <div class="container-xxl py-5 striped-section">
+        <div class="container py-5">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-secondary text-uppercase">Bảng giá</h6>
+                <h1 class="mb-5">Lựa chọn phù hợp cho bạn</h1>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="price-item">
+                        <div class="border-bottom p-4 mb-4">
+                            <h5 class="text-primary mb-1">Đặt đơn lẻ</h5>
+                            <!-- <h1 class="display-5 mb-0">
+                                <small class="align-top" style="font-size: 22px; line-height: 45px;">$</small>49.00<small
+                                    class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Month</small>
+                            </h1> -->
+                        </div>
+                        <div class="p-4 pt-0">
+                            <p><i class="fa fa-check text-success me-3"></i>Theo dõi hành trình cơ bản</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Giao hàng tiêu chuẩn</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Hỗ trợ kho Trung Quốc</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Tư vấn thủ tục nhập</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Chăm sóc khách hàng giờ hành chính</p>
+                            <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span >Đặt ngay</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="price-item">
+                        <div class="border-bottom p-4 mb-4">
+                            <h5 class="text-primary mb-1">Đặt đơn lô</h5>
+                            <!-- <h1 class="display-5 mb-0">
+                                <small class="align-top" style="font-size: 22px; line-height: 45px;">$</small>99.00<small
+                                    class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Month</small>
+                            </h1> -->
+                        </div>
+                        <div class="p-4 pt-0">
+                            <p><i class="fa fa-check text-success me-3"></i>Theo dõi nâng cao &amp; cảnh báo</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Giao hàng nhanh</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Hỗ trợ mua hàng hộ</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Thanh toán hộ đa kênh</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Chăm sóc khách hàng 24/7</p>
+                            <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span >Đặt ngay</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="price-item">
+                        <div class="border-bottom p-4 mb-4">
+                            <h5 class="text-primary mb-1">Đặt đơn lô theo chu kỳ</h5>
+                            <!-- <h1 class="display-5 mb-0">
+                                <small class="align-top" style="font-size: 22px; line-height: 45px;">$</small>149.00<small
+                                    class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Month</small>
+                            </h1> -->
+                        </div>
+                        <div class="p-4 pt-0">
+                            <p><i class="fa fa-check text-success me-3"></i>Giải pháp logistics theo nhu cầu</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Ưu tiên kho bãi &amp; nhân sự</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Quản lý đơn hàng doanh nghiệp</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Bảo hiểm hàng hóa linh hoạt</p>
+                            <p><i class="fa fa-check text-success me-3"></i>Ưu đãi khách hàng thân thiết</p>
+                            <a class="btn-slide mt-2" href=""><i class="fa fa-arrow-right"></i><span >Đặt ngay</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pricing End -->
+
+
+    <!-- Quote Start -->
+    <div class="container-xxl py-5 striped-section">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase mb-3">Nhận báo giá</h6>
+                    <h1 class="mb-5">Yêu cầu báo giá nhanh!</h1>
+                    <p class="mb-5">Chia sẻ nhu cầu vận chuyển, mua hàng hộ hoặc thanh toán hộ. Đội ngũ HL TrungViet sẽ tư vấn phương án tối ưu về chi phí và thời gian.</p>
+                    <div class="d-flex align-items-center">
+                        <i class="fa fa-headphones fa-2x flex-shrink-0 bg-primary p-3"></i>
+                        <div class="ps-4">
+                            <h6>Hotline hỗ trợ 24/7</h6>
+                            <h3 class="text-primary m-0">0966 862 355</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="bg-light text-center p-5 wow fadeIn" data-wow-delay="0.5s">
+                        <form action="mailto:vietson707@gmail.com" method="post" enctype="text/plain" data-mailto="vietson707@gmail.com" data-subject="Yeu cau bao gia">
+                            <div class="row g-3">
+                                <div class="col-12 col-sm-6">
+                                    <input type="text" class="form-control border-0" name="name" placeholder="Họ và tên" style="height: 55px;">
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <input type="email" class="form-control border-0" name="email" placeholder="Email" style="height: 55px;">
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <input type="text" class="form-control border-0" name="phone" placeholder="Số điện thoại" style="height: 55px;">
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <select class="form-select border-0" name="service" style="height: 55px;">
+                                        <option selected>Chọn dịch vụ</option>
+                                        <option value="1">Vận chuyển hàng hóa</option>
+                                        <option value="2">Mua hàng hộ</option>
+                                        <option value="3">Thanh toán hộ</option>
+                                        <option value="4">Tư vấn nhập hàng</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <textarea class="form-control border-0" name="message" placeholder="Nhu cầu chi tiết"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-primary w-100 py-3" type="submit">Gửi yêu cầu</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Quote End -->
+
+    <!-- Testimonial Start -->
+    <div class="container-xxl py-5 wow fadeInUp striped-section" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="text-center">
+                <h6 class="text-secondary text-uppercase">Cảm nhận</h6>
+                <h1 class="mb-0">Khách hàng nói gì?</h1>
+            </div>
+            <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
+                <div class="testimonial-item p-4 my-5">
+                    <i class="fa fa-quote-right fa-3x position-absolute top-0 end-0 mt-n3 me-4"></i>
+                    <div class="d-flex align-items-end mb-4">
+                        <img class="img-fluid flex-shrink-0" src="img/testimonial-1.jpg" style="width: 80px; height: 80px;">
+                        <div class="ms-4">
+                            <h5 class="mb-1">Khách hàng</h5>
+                            <p class="m-0">Doanh nghiệp</p>
+                        </div>
+                    </div>
+                    <p class="mb-0">Hàng hóa luôn được giao đúng hẹn, đóng gói cẩn thận và được cập nhật trạng thái liên tục.</p>
+                </div>
+                <div class="testimonial-item p-4 my-5">
+                    <i class="fa fa-quote-right fa-3x position-absolute top-0 end-0 mt-n3 me-4"></i>
+                    <div class="d-flex align-items-end mb-4">
+                        <img class="img-fluid flex-shrink-0" src="img/testimonial-2.jpg" style="width: 80px; height: 80px;">
+                        <div class="ms-4">
+                            <h5 class="mb-1">Khách hàng</h5>
+                            <p class="m-0">Nhập khẩu</p>
+                        </div>
+                    </div>
+                    <p class="mb-0">Chi phí minh bạch, thủ tục đơn giản, đội ngũ hỗ trợ rất nhiệt tình.</p>
+                </div>
+                <div class="testimonial-item p-4 my-5">
+                    <i class="fa fa-quote-right fa-3x position-absolute top-0 end-0 mt-n3 me-4"></i>
+                    <div class="d-flex align-items-end mb-4">
+                        <img class="img-fluid flex-shrink-0" src="img/testimonial-3.jpg" style="width: 80px; height: 80px;">
+                        <div class="ms-4">
+                            <h5 class="mb-1">Khách hàng</h5>
+                            <p class="m-0">Bán lẻ</p>
+                        </div>
+                    </div>
+                    <p class="mb-0">Dịch vụ mua hàng hộ và kiểm hàng giúp chúng tôi yên tâm mở rộng nguồn cung.</p>
+                </div>
+                <div class="testimonial-item p-4 my-5">
+                    <i class="fa fa-quote-right fa-3x position-absolute top-0 end-0 mt-n3 me-4"></i>
+                    <div class="d-flex align-items-end mb-4">
+                        <img class="img-fluid flex-shrink-0" src="img/testimonial-4.jpg" style="width: 80px; height: 80px;">
+                        <div class="ms-4">
+                            <h5 class="mb-1">Khách hàng</h5>
+                            <p class="m-0">Ecommerce</p>
+                        </div>
+                    </div>
+                    <p class="mb-0">HL TrungViet Logistics là đối tác tin cậy cho các lô hàng thương mại điện tử của chúng tôi.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Testimonial End -->
+
+
+    <Footer />
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <LegacyScripts />
+
+    <!-- Template Javascript -->
+    <script is:inline src="/js/navigation.js"></script>
+    <script is:inline src="js/main.js"></script>
+    <script is:inline>
+        (function() {
+            const form = document.getElementById('tracking-form');
+            if (!form) return;
+
+            const numberInput = document.getElementById('tracking-number');
+            const carrierInput = document.getElementById('carrier-input');
+            const carrierDatalist = document.getElementById('carrier-list');
+            const statusEl = document.getElementById('tracking-status');
+            const resultEl = null;
+            const prettyEl = null;
+
+            const API_BASE = (location.port === '5500') ? 'http://localhost:3000' : '';
+            const CARRIER_URL = `${API_BASE}/api/carriers`;
+
+            // No inline fetch on index; just submit to track.html
+
+            let carriersCache = [];
+            let carrierNameByKey = {};
+
+            async function loadCarriers() {
+                try {
+                    const res = await fetch(CARRIER_URL);
+                    if (!res.ok) throw new Error(`Carrier list error ${res.status}`);
+                    const data = await res.json();
+                    const carriers = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
+                    carriersCache = carriers;
+                    carrierNameByKey = carriers.reduce((acc, c) => {
+                        acc[c.key] = c._name || c.name || '';
+                        return acc;
+                    }, {});
+                    carrierDatalist.innerHTML = carriers.map(c => `<option value="${c.key} - ${c._name || c.name}">${c._name || c.name}</option>`).join('');
+                } catch (err) {
+                    console.warn('Không tải được danh sách hãng:', err);
+                }
+            }
+            loadCarriers();
+
+            function parseCarrierValue(value) {
+                const match = String(value || '').trim().match(/^\\d+/);
+                if (!match) return undefined;
+                return Number(match[0]);
+            }
+
+            function formatResult(data) {
+                try {
+                    const accepted = data?.info?.data?.accepted?.[0];
+                    if (!accepted) return 'Không có dữ liệu.';
+                    const carrierKey = accepted.carrier;
+                    const carrierName = carrierNameByKey[carrierKey] || (carrierKey || 'auto');
+                    const latest = accepted.track_info?.latest_event;
+                    const latestStatus = accepted.track_info?.latest_status;
+                    const provider = accepted.track_info?.tracking?.providers?.[0];
+                    const providerName = provider?.provider?.name || carrierName || 'N/A';
+                    const events = provider?.events || [];
+                    const lines = [];
+                    lines.push(`Mã: ${accepted.number}`);
+                    lines.push(`Hãng: ${providerName} (${carrierKey || 'auto'})`);
+                    if (latestStatus?.status) lines.push(`Trạng thái: ${latestStatus.status}${latestStatus.sub_status ? ` / ${latestStatus.sub_status}` : ''}`);
+                    if (latest?.description) lines.push(`Mới nhất: ${latest.description}`);
+                    if (latest?.time_iso) lines.push(`Thời gian: ${latest.time_iso}`);
+                    if (latest?.location) lines.push(`Vị trí: ${latest.location}`);
+                    if (events.length) {
+                        lines.push('--- Lịch sử ---');
+                        events.slice(0, 10).forEach(ev => {
+                            const t = ev.time_iso || ev.time_utc || '';
+                            const loc = ev.location ? ` (${ev.location})` : '';
+                            lines.push(`• ${t} – ${ev.description || ''}${loc}`);
+                        });
+                    }
+                    return lines.join('\\n');
+                } catch (err) {
+                    return 'Không thể định dạng kết quả.';
+                }
+            }
+
+            function formatDate(iso) {
+                if (!iso) return '';
+                return iso.replace('T', ' ').replace('Z', ' UTC');
+            }
+
+            function formatResultHtml(data) {
+                const accepted = data?.info?.data?.accepted?.[0];
+                if (!accepted) return '<div class="text-muted">Không có dữ liệu.</div>';
+                const carrierKey = accepted.carrier;
+                const carrierName = carrierNameByKey[carrierKey] || (carrierKey || 'auto');
+                const latest = accepted.track_info?.latest_event;
+                const latestStatus = accepted.track_info?.latest_status;
+                const provider = accepted.track_info?.tracking?.providers?.[0];
+                return '';
+            }
+
+            // No inline fetch; form submits to track.html
+        })();
+    </script>
+
+</BaseLayout>

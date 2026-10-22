@@ -1,6 +1,6 @@
 import { readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-const files = ['server.js', ...['api', 'server-lib', 'js', 'scripts', 'tests'].flatMap(dir =>
+const files = ['server.js', ...['api', 'server-lib', 'public/js', 'scripts', 'tests'].flatMap(dir =>
   readdirSync(dir).filter(name => name.endsWith('.js')).map(name => `${dir}/${name}`))];
 for (const file of files) {
   const result = spawnSync(process.execPath, ['--check', file], { stdio: 'inherit' });

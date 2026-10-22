@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { Readable } from 'node:stream';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
@@ -65,6 +65,10 @@ test('body parsing preserves UTF-8 across split raw chunks and empty bodies', as
 });
 
 test('one local HTTP server serves page/query routes and all five handlers', async t => {
+  if (!existsSync('dist/index.html')) {
+    t.skip('Build output absent; run npm run check after installing dependencies');
+    return;
+  }
   // Managed sandboxes may deny even loopback sockets; expose that as a skip.
   const socketError = await new Promise(resolve => {
     const probe = net.createServer();
@@ -96,7 +100,7 @@ test('one local HTTP server serves page/query routes and all five handlers', asy
       const response = await fetch(base + route);
       assert.equal(response.status, 200, route);
       const filename = new URL(route, base).pathname.slice(1) || 'index.html';
-      assert.equal(await response.text(), readFileSync(filename, 'utf8'), route);
+      assert.equal(await response.text(), readFileSync(`dist/${filename}`, 'utf8'), route);
     }
     for (const name of Object.keys(handlers)) {
       assert.equal((await fetch(`${base}/api/${name}`, { method: 'OPTIONS' })).status, 204, name);

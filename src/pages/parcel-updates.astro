@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Parcel Updates (Temp)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Parcel Updates (Temp)" bodyClass="bg-light" standardHead={false}>
+<Fragment slot="head">
+    
+    
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+</Fragment>
+
     <div class="container py-5">
         <div class="row g-4">
             <div class="col-lg-6">
@@ -95,7 +97,7 @@
         </div>
     </div>
 
-    <script>
+    <script is:inline>
         (function() {
             const writeForm = document.getElementById('write-form');
             const readForm = document.getElementById('read-form');
@@ -195,5 +197,5 @@
             });
         })();
     </script>
-</body>
-</html>
+
+</BaseLayout>

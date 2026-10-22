@@ -20,6 +20,7 @@ const mime = {
   '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf',
   '.eot': 'application/vnd.ms-fontobject', '.map': 'application/json'
 };
+const staticRoot = path.join(root, 'dist');
 const publicDirs = new Set(['assets', 'carriers', 'css', 'img', 'js', 'lib', 'partials']);
 
 const server = http.createServer(async (req, res) => {
@@ -41,12 +42,12 @@ const server = http.createServer(async (req, res) => {
     }
     const relative = decodeURIComponent(url.pathname).replace(/^\/+/, '') || 'index.html';
     const parts = relative.split('/');
-    const publicFile = (parts.length === 1 && relative.endsWith('.html')) || publicDirs.has(parts[0]);
-    const filename = path.resolve(root, relative);
-    const contained = filename.startsWith(root + path.sep);
+    const publicFile = (parts.length === 1 && relative.endsWith('.html')) || publicDirs.has(parts[0]) || ['favicon-tile.svg', 'apple-touch-icon.png'].includes(relative);
+    const filename = path.resolve(staticRoot, relative);
+    const contained = filename.startsWith(staticRoot + path.sep);
     if (!['GET', 'HEAD'].includes(req.method) || !publicFile || !contained ||
         parts.some(part => part.startsWith('.')) || !fs.existsSync(filename) ||
-        !fs.statSync(filename).isFile() || !fs.realpathSync(filename).startsWith(root + path.sep)) {
+        !fs.statSync(filename).isFile() || !fs.realpathSync(filename).startsWith(staticRoot + path.sep)) {
       res.status(404).json({ error: 'Not found' });
       return;
     }

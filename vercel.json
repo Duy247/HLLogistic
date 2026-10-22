@@ -1,9 +1,35 @@
 {
   "version": 2,
-  "routes": [
-    { "src": "/api/track", "dest": "/api/track.js" },
-    { "src": "/api/carriers", "dest": "/api/carriers.js" },
-    { "src": "/api/parcel-updates", "dest": "/api/parcel-updates.js" },
-    { "src": "/(.*)", "dest": "/$1" }
-  ]
+  "framework": "astro",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "cleanUrls": false,
+  "functions": {
+    "api/*.js": {
+      "includeFiles": "carriers/apicarrier.all.json"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/track",
+      "destination": "/api/track.js"
+    },
+    {
+      "source": "/api/carriers",
+      "destination": "/api/carriers.js"
+    },
+    {
+      "source": "/api/parcel-updates",
+      "destination": "/api/parcel-updates.js"
+    },
+    {
+      "source": "/api/news",
+      "destination": "/api/news.js"
+    },
+    {
+      "source": "/api/news-post",
+      "destination": "/api/news-post.js"
+    }
+  ],
+  "installCommand": "npm install"
 }

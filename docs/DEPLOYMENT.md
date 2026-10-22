@@ -1,3 +1,5 @@
+> E1 baseline below is historical. See [E2 foundation](E2_FOUNDATION.md) for the current Astro build, local runtime, and Vercel setup.
+
 # Deployment and data — E1/T02
 
 2026-10-22 source inventory. Dashboard settings, deployed-source parity, actual

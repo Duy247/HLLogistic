@@ -1,0 +1,181 @@
+---
+import LegacyScripts from '../components/LegacyScripts.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+<BaseLayout title="HL Trung Việt Logistics - Nổi bật" bodyClass="" standardHead={true}>
+
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+
+    <!-- Navbar Start -->
+    <Navbar />
+    <!-- Navbar End -->
+
+
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header py-5" style="margin-bottom: 6rem;">
+        <div class="container py-5">
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Nổi bật</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a class="text-white" href="#">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a class="text-white" href="#">Trang</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Nổi bật</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Fact Start -->
+    <div class="container-xxl py-5 striped-section">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase mb-3">Tầm nhìn &amp; cam kết</h6>
+                    <h1 class="mb-5">Lựa chọn vận chuyển Trung – Việt hàng đầu</h1>
+                    <p class="mb-5">Tốc độ, uy tín, an toàn. Thông quan 2 đầu, kho chính chủ, đồng hành từ xưởng đến kho Việt Nam với chi phí tối ưu.</p>
+                    <div class="d-flex align-items-center">
+                        <i class="fa fa-headphones fa-2x flex-shrink-0 bg-primary p-3 text-white"></i>
+                        <div class="ps-4">
+                            <h6>Hotline hỗ trợ 24/7</h6>
+                            <h3 class="text-primary m-0">0966 862 355</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-sm-6">
+                            <div class="bg-primary p-4 mb-4 wow fadeIn" data-wow-delay="0.3s">
+                                <i class="fa fa-users fa-2x text-white mb-3"></i>
+                                <h2 class="text-white mb-2" data-toggle="counter-up">6826</h2>
+                                <p class="text-white mb-0">Khách hàng hài lòng</p>
+                            </div>
+                            <div class="bg-secondary p-4 wow fadeIn" data-wow-delay="0.5s">
+                                <i class="fa fa-ship fa-2x text-white mb-3"></i>
+                                <h2 class="text-white mb-2" data-toggle="counter-up">38639</h2>
+                                <p class="text-white mb-0">Lô hàng hoàn thành</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="bg-success p-4 wow fadeIn" data-wow-delay="0.7s">
+                                <i class="fa fa-star fa-2x text-white mb-3"></i>
+                                <h2 class="text-white mb-2" data-toggle="counter-up">59286</h2>
+                                <p class="text-white mb-0">Đánh giá tích cực</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fact End -->
+
+
+    <!-- Feature Start -->
+    <div class="container-fluid overflow-hidden py-5 px-lg-0 striped-section">
+        <div class="container feature py-5 px-lg-0">
+            <div class="row g-5 mx-lg-0">
+                <div class="col-lg-6 feature-text wow fadeInUp" data-wow-delay="0.1s">
+                    <h6 class="text-secondary text-uppercase mb-3">Điểm mạnh</h6>
+                    <h1 class="mb-5">Kho bãi chính chủ • Thông quan 2 đầu</h1>
+                    <div class="d-flex mb-5 wow fadeInUp" data-wow-delay="0.3s">
+                        <i class="fa fa-globe text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>Thông quan 2 đầu</h5>
+                            <p class="mb-0">Trực tiếp khai báo, hạn chế kiểm hóa, rút ngắn thời gian và chi phí.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-5 wow fadeIn" data-wow-delay="0.5s">
+                        <i class="fa fa-shipping-fast text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>Đánh cont từ xưởng</h5>
+                            <p class="mb-0">Tổng kho lớn, gom/đánh cont linh hoạt, tối ưu vận hành.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-0 wow fadeInUp" data-wow-delay="0.7s">
+                        <i class="fa fa-headphones text-primary fa-3x flex-shrink-0"></i>
+                        <div class="ms-4">
+                            <h5>Hỗ trợ 24/7</h5>
+                            <p class="mb-0">Tư vấn cước, lộ trình, xử lý phát sinh nhanh chóng, tận tâm.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s" style="min-height: 400px;">
+                    <div class="position-relative h-100">
+                        <img class="position-absolute img-fluid w-100 h-100" src="img/feature.jpg" style="object-fit: cover;" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Feature End -->
+        
+
+    <!-- Platforms Start -->
+    <div class="container-xxl py-5 striped-section">
+        <div class="container py-5">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="text-secondary text-uppercase">Nền tảng</h6>
+                <h1 class="mb-4">Hỗ trợ mua &amp; vận chuyển</h1>
+            </div>
+            <div class="row g-4 text-center">
+                <div class="col-6 col-md-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <img src="img/platform-boxlog.png" alt="Boxlog" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <img src="img/platform-boxmo.png" alt="Boxmo" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <img src="img/platform-taobao.png" alt="Taobao" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <img src="img/platform-1688.png" alt="1688" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <img src="img/platform-aliexpress.png" alt="AliExpress" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 wow fadeInUp" data-wow-delay="0.4s">
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <img src="img/platform-tmall.png" alt="Tmall" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Platforms End -->
+
+    <Footer />
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <LegacyScripts />
+
+    <!-- Template Javascript -->
+    <script is:inline src="/js/navigation.js"></script>
+    <script is:inline src="js/main.js"></script>
+
+</BaseLayout>

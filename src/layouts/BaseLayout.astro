@@ -1,0 +1,21 @@
+---
+import SiteHead from '../components/SiteHead.astro';
+interface Props { title: string; bodyClass?: string; standardHead?: boolean }
+const { title, bodyClass, standardHead = true } = Astro.props;
+---
+<!doctype html>
+<html lang="vi">
+  <head>
+    {standardHead ? <SiteHead title={title} /> : <>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>{title}</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon-tile.svg" />
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    </>}
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>

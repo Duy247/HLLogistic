@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8">
-    <title>Parcel Updates Mobile</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Parcel Updates Mobile" bodyClass="" standardHead={false}>
+<Fragment slot="head">
+    
+    
+    
+    <style is:global>
         body { font-family: Arial, sans-serif; margin: 0; padding: 16px; background: #f7f7f7; }
         h1 { font-size: 20px; margin-bottom: 12px; }
         .card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 16px; }
@@ -53,8 +55,8 @@
             body.is-retreated .scan-overlay { display: block; }
         }
     </style>
-</head>
-<body>
+</Fragment>
+
     <div id="edge-flash" class="edge-flash" aria-hidden="true"></div>
     <h1>Parcel Updates (Mobile Scan)</h1>
     <div class="card config-card">
@@ -112,7 +114,7 @@
         <pre id="log">Chưa gửi yêu cầu.</pre>
     </div>
 
-    <script>
+    <script is:inline>
         (function() {
             const secretEl = document.getElementById('secret');
             const codeEl = document.getElementById('parcelCode');
@@ -320,5 +322,5 @@
             sendScanBtn.addEventListener('click', sendRequest);
         })();
     </script>
-</body>
-</html>
+
+</BaseLayout>
