@@ -80,3 +80,24 @@ The application rate limiter is bounded, in-memory and scoped to each warm serve
 `npm run check` runs Astro diagnostics, build, JavaScript syntax checks, API acceptance fixtures, the added security regression suite and built route/asset checks. Tests use isolated SQL/provider mocks only. Tests cover sanitizer payloads and stability, write/read/preview sanitization, independent credentials, publication predicates, CORS, body limits, limiter expiry/throttling, generic errors, timeouts and headers. Local HTTP integration remains skipped because the sandbox denies loopback sockets (EPERM). Deployment headers, browser rendering/camera operation and cross-instance edge limits require verification after deployment in a network-enabled environment.
 
 Final local results: `npm run check` passes with zero Astro errors/warnings/hints; 61 acceptance tests and 10 security tests pass, with one HTTP integration test skipped for sandbox EPERM. `node scripts/check-v2.js` and `git diff --check` also pass. The supplemental V2 check now expects the authenticated parcel controls. A provider mock additionally verifies that already-registered tracking codes remain readable without any delete request, using the documented duplicate-registration code from [17TRACK API docs](https://api.17track.net/en/doc).
+
+## Clean public navigation — 2026-10-22
+
+- `src/components/V2Header.astro` and `src/components/V2Footer.astro`: public links now use `/about`, `/service`, `/price`, `/news` (Tin tức / News), `/track` and `/contact`; brand links use `/`. Footer staff link remains present at `/parcel-updates`. No public admin links were added. Existing menu styling and hamburger behavior are retained.
+- `src/pages/{about,contact,feature,index,news-admin,news,price,service,team,testimonial,track,404}.astro`: replaced internal `.html` links with root-relative clean paths, including the home tracking form action and the news editor's public news link. The 404 retains one Vietnamese page-not-found heading.
+- `vercel.json`: enabled `cleanUrls`; all five API rewrites, function packaging and security headers are unchanged.
+- `scripts/check-build.js`: linked-output checks now resolve clean page paths to generated `.html` files while still checking asset existence.
+- `tests/navigation.test.js`: built header/footer regressions cover all requested public routes, News translation, staff route, absence of public admin/HTML links, `cleanUrls: true`, and a single 404 heading. Existing mobile-menu regression remains green.
+- Validation: `npm run check` passed (Astro diagnostics, static build, JavaScript/test checks and built-route/asset verification); `git diff --check` passed. No `.html` references remain across `src`. Initial dependency installation hit sandbox EPERM during esbuild's install-time version probe; `npm ci --ignore-scripts` completed installation and the full check then passed. Vercel deployment behavior has not been tested live.
+- No commit, branch change, deployment or production write performed.
+
+## Public-page cleanup and staff indexing — 2026-10-22
+
+This follow-up supersedes the earlier footer staff-link requirement.
+
+- Deleted `src/pages/feature.astro`, `src/pages/team.astro` and `src/pages/testimonial.astro`. Removed their route expectations from `tests/fixtures/acceptance.json` and `scripts/check-v2.js`. No remaining links target these pages. Their images, platform assets and card styles are still used by about/service, so they were retained; there were no exclusive components or assets to delete.
+- Removed the staff workspace link from `src/components/V2Footer.astro` entirely. Staff continue to use direct URLs.
+- `src/layouts/V2Layout.astro` forwards its head slot to BaseLayout. `src/pages/parcel-updates.astro` supplies the robots meta tag through that slot; `admin-parcels.astro` inherits it through its existing parcel-page alias. `src/pages/news-admin.astro` and `src/pages/parcel-updates-mobile.astro` supply the same `noindex, nofollow` tag in their existing head slots.
+- Added `public/robots.txt`: allows `/` and disallows news-admin, admin-parcels, parcel-updates and parcel-updates-mobile in both clean and `.html` forms.
+- Updated `tests/navigation.test.js` to reject staff links in shared public navigation and verify built staff-page head tags, robots directives and absence of the deleted pages from build output.
+- Validation: `npm run check`, `node scripts/check-v2.js` and `git diff --check` passed. No commit, branch change or deployment performed.

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /news-admin
+Disallow: /news-admin.html
+Disallow: /admin-parcels
+Disallow: /admin-parcels.html
+Disallow: /parcel-updates
+Disallow: /parcel-updates.html
+Disallow: /parcel-updates-mobile
+Disallow: /parcel-updates-mobile.html

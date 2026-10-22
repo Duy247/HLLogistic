@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="HL Trung Việt Logistics - News Admin" bodyClass="" standardHead={true}>
-<Fragment slot="head"><style is:global>
+<Fragment slot="head"><meta name="robots" content="noindex, nofollow" /><style is:global>
         :root {
             --admin-ink: #1a1f2a;
             --admin-slate: #5d6b7a;
@@ -174,7 +174,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                     <p class="status-text">Đăng, chỉnh sửa và xuất bản tin tức từ cùng hệ thống vận hành.</p>
                 </div>
                 <div>
-                    <a href="news.html" class="btn btn-outline-secondary">Xem trang tin</a>
+                    <a href="/news" class="btn btn-outline-secondary">Xem trang tin</a>
                 </div>
             </div>
 

@@ -7,6 +7,7 @@ interface Props { title: string; bodyClass?: string }
 const {title, bodyClass} = Astro.props;
 ---
 <BaseLayout title={title} bodyClass={bodyClass} standardHead={false}>
+<slot name="head" slot="head" />
 <Header /><main id="main"><slot /></main><Footer />
 <script is:inline src="/js/v2.js"></script>
 </BaseLayout>

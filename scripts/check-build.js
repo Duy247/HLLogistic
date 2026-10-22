@@ -14,7 +14,9 @@ for (const route of fixtures.routes) {
   for (const match of html.matchAll(/(?:src|href)="([^"#?]+)"/g)) {
     const target = match[1];
     if (/^(?:[a-z]+:|\/\/)/i.test(target)) continue;
-    assert.ok(existsSync(`dist/${target.replace(/^\//, '')}`), `${route}: missing ${target}`);
+    const pathname = new URL(target, 'https://fixture.invalid').pathname;
+    const file = `dist/${pathname === '/' ? 'index.html' : pathname.slice(1)}`;
+    assert.ok(existsSync(file) || (!/\.[^/]+$/.test(pathname) && existsSync(`${file}.html`)), `${route}: missing ${target}`);
   }
 }
 assert.deepEqual(readFileSync('dist/assets/logo-big.png'), readFileSync('public/assets/logo-big.png'));
