@@ -1,60 +1,47 @@
-# E2 handoff — 2026-10-22
+# UI v2 handoff — 2026-10-22
 
-## Implemented in the working tree
+## Changed
 
-- Read TECH_AUDIT.md, docs/CONTRACT.md, docs/E1_HANDOFF.md and workspace rules.
-- Ported all 14 original HTML pages to native Astro page markup, including
-  tracking, news/admin, desktop/mobile parcel tools, team and 404. Static file
-  output targets all 15 contracted URLs including / and /index.html.
-- Added one typed BaseLayout and shared SiteHead, Navbar, Footer and legacy
-  dependency components. Navigation renders at build time; page-specific
-  scripts and tool shells remain intact. Shared footer uses the original home
-  footer's branding/contact details and attribution consistently.
-- Moved existing public assets into public/ without changing their URLs,
-  contents, logo or colors. Wired the supplied SVG tile and 180px Apple tile
-  byte-for-byte as /favicon-tile.svg and /apple-touch-icon.png on every page.
-- Configured static Astro output and explicit Vercel mappings for all five root
-  api/ functions, including carrier catalog packaging. No API handler or shared
-  body parser was changed. Added Astro development middleware using those same
-  handlers; preview serves dist/ through the existing local runtime.
-- Added exact Astro/TypeScript/check dependency declarations, strict TS config,
-  build/dev/preview commands, and Astro check + build to npm run check. Added
-  checks for generated routes/assets/favicons/navigation and carrier parity.
-- Documented structure, setup and later mockup integration in
-  docs/E2_FOUNDATION.md. Mockups have not replaced production feature behavior.
+- Ported the approved photographic v2 home, contact, tracking and parcel editor into native Astro layouts/components. Retained Vietnamese content, approved SVG logos, green/forest/lime/black palette, rates, six service descriptions and template attribution. Lime is an accent fill, not text on white.
+- Preserved every existing route and query contract; added `/admin-parcels.html` as an alias of `/parcel-updates.html`. Other legacy pages and the mobile scanning workflow remain available.
+- Tracking uses the existing carrier catalog, `/api/track` and `/api/parcel-updates`. Sources load independently, have separate error/retry states, reject stale responses and use the current carrier input on each lookup. API-derived text renders through textContent.
+- Parcel editor reads real API events, selects explicit event IDs, preserves location/time fields, has separate create/update/delete controls, pending states and a cancel-first native delete confirmation. API handlers, database logic and API tests are unchanged.
+- Removed write-secret entry fields from parcel/mobile/news admin pages. Existing endpoints still require their original authorization; no secret is embedded, stored or bypassed.
+- All JPEG/WebP photographs moved from public into `src/assets`; every rendered photo uses `astro:assets` Image. Nine approved crops are in `src/assets/v2`; legacy photos are in `src/assets/legacy`. Removed public CSS photo backgrounds. Build checks verify generated image EXIF/XMP is absent. Public PNG logos, icons, platform artwork and schematic map remain non-photographic assets.
+- Quote forms have labels, validation, retained input and a visually hidden honeypot with aria-hidden, tabindex -1 and autocomplete off. No quote API exists in this application: submitting explains that no request was sent and provides the real phone/email. No simulated delivery success.
+- Contact map is static inline SVG. Statistics retain explicit illustrative TODO labels pending issue #36. Progressive motion honors reduced motion; optional VI/EN marketing labels retain the mockup's partial localization behavior.
 
-## Verified and blocked
+## Validation
 
-- `node scripts/check.js`: 61 fixture/body/API tests pass, zero failures, one
-  HTTP test skipped because dist/ is absent. No database/provider calls made.
-- Independent source verification: all 14 route sources exist; inline feature
-  scripts match baseline after newline normalization; every moved tracked asset
-  and both supplied favicons match original bytes. Five API handlers unchanged.
-- JavaScript syntax checks and `git diff --check` pass.
-- `npm run check` DOES NOT PASS YET: `astro: not found`. Registry installation
-  fails EAI_AGAIN; proxy connection fails EPERM; offline cache lacks Astro/check.
-  Consequently Astro compilation, TypeScript diagnostics, generated route tests,
-  local HTTP/browser/camera behavior and Vercel packaging are NOT verified.
-- package-lock.json remains the E1 lockfile; it does not yet include the newly
-  declared dependencies. No fabricated lock entries or generated build artifacts.
-  Vercel is configured to run npm install to resolve them before building.
+- `npm run check`: Astro diagnostics (zero errors; one pre-existing unused-variable hint), Astro build, JavaScript syntax, existing acceptance tests and built route/asset checks pass.
+- Acceptance suite: 61 pass, 0 fail; 1 HTTP integration test skips because loopback sockets are denied (EPERM).
+- `node scripts/check-v2.js`: photo placement, generated image URLs/metadata stripping, quote honeypots, static maps and no password inputs on v2 pages pass.
+- `git diff --check`: passes.
+- Dependencies were copied from the existing adjacent checkout for local verification; node_modules and build output are ignored. Package declarations/lockfile unchanged.
 
-## Required next steps
+## Left / release limitations
 
-1. In a network-enabled checkout run `npm install` to regenerate package-lock.json
-   and install the exact declared dependencies. Review the lockfile. Run
-   `npm run check` and fix any compiler/type/build/link failures it reveals.
-   After lock regeneration use npm ci for reproducible installations.
-2. Run dev and preview; verify every legacy .html route and query, /api/carriers,
-   and OPTIONS on all five APIs. Check news CRUD/HTML preview, tracking timelines,
-   parcel explicit/latest writes and mobile scan/manual fallback using isolated
-   fixtures/data. Inspect a Vercel preview's static output and function catalog.
-3. Render mobile/desktop pages and check keyboard navigation before acceptance.
-   Integrate mockups through shared components without dropping feature flows.
-4. Broader audit T05/T06 service consolidation/database lifecycle, behavior repairs
-   and security/release gates remain separate work. No schema or auth changes.
+- Auth integration remains necessary for staff writes. The unchanged API requires PARCEL_UPDATES_SECRET in its contract. Removing secret-entry UI intentionally means writes cannot authenticate in this static deployment; they report authorization failure rather than pretending success. Mobile scanning/manual entry and news code remain, but writes also require a future trusted authentication integration. No new insecure proxy or API contract change was introduced.
+- Connect a real quote intake service with server validation and honeypot handling before claiming delivery. Current form directs customers to phone/email and preserves inputs.
+- Replace illustrative statistics with approved values under issue #36; confirm rates with operations.
+- Browser screenshots, keyboard/dialog checks, responsive reflow at 390×844 and 1440×1000, 200% zoom and camera hardware verification remain outstanding. Local HTTP integration cannot run in this sandbox.
+- Supplemental routes retain their existing content/layout; their photos now use Astro's image pipeline. Full English localization remains out of scope.
 
-No real secrets were written to repository files. No production writes,
-deployment, commit or push. All changes remain in the working tree as requested;
-.git is read-only. This is an implemented but build-unverified foundation, not
-an accepted E2 build or deployment.
+## Commands
+
+```sh
+npm ci
+npm run check
+node scripts/check-v2.js
+npm run build
+npm run dev
+```
+
+Working tree is on `rework/ui-v2`. Commit was attempted but the sandbox denies writes to `/workspace/hllogistic/repo/.git/worktrees/ui-v2/index.lock` (read-only Git metadata). Changes remain uncommitted. No push, deployment, database migration or production write.
+
+To commit once Git metadata is writable:
+
+```sh
+git add HANDOFF.md public src scripts/check-v2.js
+git commit -m "Port approved v2 layouts to Astro with processed photos and live tracking"
+```

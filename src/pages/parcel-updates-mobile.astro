@@ -60,8 +60,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div id="edge-flash" class="edge-flash" aria-hidden="true"></div>
     <h1>Parcel Updates (Mobile Scan)</h1>
     <div class="card config-card">
-        <label>Secret</label>
-        <input type="password" id="secret" placeholder="Nhập secret của bạn">
+        <p>Thao tác ghi cần xác thực nhân viên qua hệ thống.</p>
+        <input type="hidden" value="" id="secret" />
         <div class="muted">Không lưu, chỉ gửi cùng yêu cầu.</div>
     </div>
 
@@ -278,9 +278,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 };
 
                 if (!payload.secret) {
-                    statusEl.textContent = 'Nhập secret.';
+                    statusEl.textContent = 'Thao tác cần xác thực nhân viên qua hệ thống.';
                     statusEl.className = 'status error';
-                    updateScanOverlay(undefined, 'Thiếu secret.');
+                    updateScanOverlay(undefined, 'Cần xác thực nhân viên.');
                     flashEdge('error');
                     return;
                 }

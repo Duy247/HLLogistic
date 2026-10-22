@@ -1,0 +1,12 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/V2Header.astro';
+import Footer from '../components/V2Footer.astro';
+import '../styles/v2.css';
+interface Props { title: string; bodyClass?: string }
+const {title, bodyClass} = Astro.props;
+---
+<BaseLayout title={title} bodyClass={bodyClass} standardHead={false}>
+<Header /><main id="main"><slot /></main><Footer />
+<script is:inline src="/js/v2.js"></script>
+</BaseLayout>

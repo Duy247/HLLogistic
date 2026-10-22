@@ -1,4 +1,9 @@
 ---
+import { Image } from "astro:assets";
+import photo0 from "../assets/legacy/img/testimonial-1.jpg";
+import photo1 from "../assets/legacy/img/testimonial-2.jpg";
+import photo2 from "../assets/legacy/img/testimonial-3.jpg";
+import photo3 from "../assets/legacy/img/testimonial-4.jpg";
 import LegacyScripts from '../components/LegacyScripts.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navbar from '../components/Navbar.astro';
@@ -47,7 +52,7 @@ import Footer from '../components/Footer.astro';
                 <div class="testimonial-item p-4 my-5">
                     <i class="fa fa-quote-right fa-3x text-light position-absolute top-0 end-0 mt-n3 me-4"></i>
                     <div class="d-flex align-items-end mb-4">
-                        <img class="img-fluid flex-shrink-0" src="img/testimonial-1.jpg" style="width: 80px; height: 80px;">
+                        <Image class="img-fluid flex-shrink-0" src={photo0} style="width: 80px; height: 80px;" alt="" />
                         <div class="ms-4">
                             <h5 class="mb-1">Khách hàng</h5>
                             <p class="m-0">Ecommerce</p>
@@ -58,7 +63,7 @@ import Footer from '../components/Footer.astro';
                 <div class="testimonial-item p-4 my-5">
                     <i class="fa fa-quote-right fa-3x text-light position-absolute top-0 end-0 mt-n3 me-4"></i>
                     <div class="d-flex align-items-end mb-4">
-                        <img class="img-fluid flex-shrink-0" src="img/testimonial-2.jpg" style="width: 80px; height: 80px;">
+                        <Image class="img-fluid flex-shrink-0" src={photo1} style="width: 80px; height: 80px;" alt="" />
                         <div class="ms-4">
                             <h5 class="mb-1">Khách hàng</h5>
                             <p class="m-0">Doanh nghiệp</p>
@@ -69,7 +74,7 @@ import Footer from '../components/Footer.astro';
                 <div class="testimonial-item p-4 my-5">
                     <i class="fa fa-quote-right fa-3x text-light position-absolute top-0 end-0 mt-n3 me-4"></i>
                     <div class="d-flex align-items-end mb-4">
-                        <img class="img-fluid flex-shrink-0" src="img/testimonial-3.jpg" style="width: 80px; height: 80px;">
+                        <Image class="img-fluid flex-shrink-0" src={photo2} style="width: 80px; height: 80px;" alt="" />
                         <div class="ms-4">
                             <h5 class="mb-1">Khách hàng</h5>
                             <p class="m-0">Bán lẻ</p>
@@ -80,7 +85,7 @@ import Footer from '../components/Footer.astro';
                 <div class="testimonial-item p-4 my-5">
                     <i class="fa fa-quote-right fa-3x text-light position-absolute top-0 end-0 mt-n3 me-4"></i>
                     <div class="d-flex align-items-end mb-4">
-                        <img class="img-fluid flex-shrink-0" src="img/testimonial-4.jpg" style="width: 80px; height: 80px;">
+                        <Image class="img-fluid flex-shrink-0" src={photo3} style="width: 80px; height: 80px;" alt="" />
                         <div class="ms-4">
                             <h5 class="mb-1">Khách hàng</h5>
                             <p class="m-0">Nhập khẩu</p>

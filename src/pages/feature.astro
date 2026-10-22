@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import photo0 from "../assets/legacy/img/feature.jpg";
 import LegacyScripts from '../components/LegacyScripts.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navbar from '../components/Navbar.astro';
@@ -112,7 +114,7 @@ import Footer from '../components/Footer.astro';
                 </div>
                 <div class="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s" style="min-height: 400px;">
                     <div class="position-relative h-100">
-                        <img class="position-absolute img-fluid w-100 h-100" src="img/feature.jpg" style="object-fit: cover;" alt="">
+                        <Image class="position-absolute img-fluid w-100 h-100" src={photo0} style="object-fit: cover;" alt="" />
                     </div>
                 </div>
             </div>
