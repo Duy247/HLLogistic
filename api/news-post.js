@@ -1,17 +1,14 @@
+import { safePost } from '../server-lib/news-content.js';
+import { allowCors, verifySecret, rateLimit } from '../server-lib/security.js';
 import { sql } from '@vercel/postgres';
 
 export const config = {
   runtime: 'nodejs'
 };
 
-function allowCors(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
 
 export default async function handler(req, res) {
-  allowCors(res);
+  if (!allowCors(req, res, 'GET,OPTIONS')) return;
 
   if (req.method === 'OPTIONS') {
     res.status(204).end();
@@ -23,6 +20,8 @@ export default async function handler(req, res) {
     return;
   }
 
+  if (req.headers?.['x-admin-secret'] && !rateLimit(req, res, 'news-read-auth', 60)) return;
+  const staff = verifySecret(req.headers?.['x-admin-secret'], process.env.NEWS_ADMIN_SECRET);
   const idParam = req.query.id;
   const slugParam = req.query.slug;
 
@@ -49,7 +48,7 @@ export default async function handler(req, res) {
                published_at as "publishedAt",
                created_at as "createdAt"
         from news
-        where id = ${id}
+        where id = ${id} and (${staff} or (published_at is not null and published_at <= now()))
         limit 1
       `);
     } else {
@@ -63,7 +62,7 @@ export default async function handler(req, res) {
                published_at as "publishedAt",
                created_at as "createdAt"
         from news
-        where slug = ${slugParam}
+        where slug = ${slugParam} and (${staff} or (published_at is not null and published_at <= now()))
         limit 1
       `);
     }
@@ -73,8 +72,8 @@ export default async function handler(req, res) {
       return;
     }
 
-    res.status(200).json({ post: rows[0] });
+    res.status(200).json({ post: safePost(rows[0]) });
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to fetch post' });
+    res.status(500).json({ error: 'Request failed' });
   }
 }

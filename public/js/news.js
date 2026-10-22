@@ -100,7 +100,12 @@
         if (!detailEl || !detailTitleEl || !detailContentEl) return;
         detailTitleEl.textContent = post.title || "Bài viết";
         detailMetaEl.textContent = formatDate(post.publishedAt);
-        detailContentEl.innerHTML = post.contentHtml || "";
+        var frame = document.createElement('iframe');
+        frame.setAttribute('sandbox', '');
+        frame.title = post.title || 'Bài viết';
+        frame.style.cssText = 'width:100%;min-height:70vh;border:0';
+        frame.srcdoc = post.contentHtml || '';
+        detailContentEl.replaceChildren(frame);
         detailEl.classList.remove("is-hidden");
         detailEl.scrollIntoView({ behavior: "smooth", block: "start" });
     }

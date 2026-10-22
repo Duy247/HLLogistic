@@ -55,7 +55,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'HEAD') res.end();
     else fs.createReadStream(filename).pipe(res);
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Unknown error' });
+    res.status(500).json({ error: 'Request failed' });
   }
 });
 server.listen(process.env.PORT || 3000, '127.0.0.1', () => {

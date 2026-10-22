@@ -1,3 +1,5 @@
+import { sanitizeContent, plainText, safePost } from '../server-lib/news-content.js';
+import { allowCors, verifySecret, rateLimit } from '../server-lib/security.js';
 import { readBody } from '../server-lib/body.js';
 import { sql } from '@vercel/postgres';
 
@@ -5,13 +7,8 @@ export const config = {
   runtime: 'nodejs'
 };
 
-const SECRET = process.env.PARCEL_UPDATES_SECRET || '';
+const SECRET = process.env.NEWS_ADMIN_SECRET || '';
 
-function allowCors(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
 
 function parseNumber(value, fallback) {
   const num = Number.parseInt(value, 10);
@@ -32,7 +29,7 @@ function slugify(text) {
 }
 
 export default async function handler(req, res) {
-  allowCors(res);
+  if (!allowCors(req, res, 'GET,POST,PUT,DELETE,OPTIONS')) return;
 
   if (req.method === 'OPTIONS') {
     res.status(204).end();
@@ -40,6 +37,8 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
+    if (req.headers?.['x-admin-secret'] && !rateLimit(req, res, 'news-read-auth', 60)) return;
+    const staff = verifySecret(req.headers?.['x-admin-secret'], SECRET);
     const limit = Math.min(parseNumber(req.query.limit, 5), 20);
     const offset = parseNumber(req.query.offset, 0);
     const pageSize = limit + 1;
@@ -53,17 +52,18 @@ export default async function handler(req, res) {
                slug,
                published_at as "publishedAt"
         from news
+        where (${staff} or (published_at is not null and published_at <= now()))
         order by published_at desc, created_at desc
         limit ${pageSize} offset ${offset}
       `;
 
       const hasMore = rows.length > limit;
-      const posts = hasMore ? rows.slice(0, limit) : rows;
+      const posts = (hasMore ? rows.slice(0, limit) : rows).map(safePost);
       const nextOffset = offset + posts.length;
 
       res.status(200).json({ posts, hasMore, nextOffset });
     } catch (err) {
-      res.status(500).json({ error: err.message || 'Failed to fetch news' });
+      res.status(500).json({ error: 'Request failed' });
     }
     return;
   }
@@ -74,18 +74,22 @@ export default async function handler(req, res) {
   }
 
   if (!SECRET) {
-    res.status(500).json({ error: 'NEWS_SECRET not set' });
+    res.status(500).json({ error: 'Service unavailable' });
     return;
   }
 
+  if (!rateLimit(req, res, 'news-requests', 180)) return;
   try {
     const body = await readBody(req);
     const providedSecret = body.secret || body.secretKey || body.key;
-    if (providedSecret !== SECRET) {
+    if (!verifySecret(providedSecret, SECRET)) {
+      if (!rateLimit(req, res, 'news-auth', 10)) return;
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
 
+    if (body.action === 'preview') { res.status(200).json({ contentHtml: sanitizeContent(body.contentHtml) }); return; }
+    if (body.action === 'verify') { res.status(200).json({ authenticated: true }); return; }
     if (req.method === 'DELETE') {
       const id = Number.parseInt(body.id, 10);
       if (Number.isNaN(id)) {
@@ -105,10 +109,10 @@ export default async function handler(req, res) {
       return;
     }
 
-    const title = String(body.title || '').trim();
+    const title = plainText(body.title).trim();
     const summary = String(body.summary || '').trim();
     const coverUrl = String(body.coverUrl || '').trim();
-    const contentHtml = String(body.contentHtml || '').trim();
+    const contentHtml = sanitizeContent(body.contentHtml).trim();
     const publishedAt = body.publishedAt || null;
     const slug = String(body.slug || '').trim() || slugify(title);
 
@@ -129,7 +133,7 @@ export default async function handler(req, res) {
             cover_url = ${coverUrl || null},
             content_html = ${contentHtml},
             slug = ${slug || null},
-            published_at = coalesce(${publishedAt}, published_at),
+            published_at = ${publishedAt},
             updated_at = now()
         where id = ${id}
         returning id,
@@ -144,7 +148,7 @@ export default async function handler(req, res) {
         res.status(404).json({ error: 'Post not found' });
         return;
       }
-      res.status(200).json({ post: rows[0] });
+      res.status(200).json({ post: safePost(rows[0]) });
       return;
     }
 
@@ -165,8 +169,8 @@ export default async function handler(req, res) {
                 created_at as "createdAt"
     `;
 
-    res.status(200).json({ post: rows[0] });
+    res.status(200).json({ post: safePost(rows[0]) });
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to save post' });
+    res.status(500).json({ error: 'Request failed' });
   }
 }

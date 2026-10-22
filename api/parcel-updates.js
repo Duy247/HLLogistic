@@ -1,3 +1,4 @@
+import { allowCors, verifySecret, rateLimit } from '../server-lib/security.js';
 import { readBody } from '../server-lib/body.js';
 import { sql } from '@vercel/postgres';
 
@@ -92,14 +93,9 @@ function send(res, status, payload) {
   res.status(status).json(payload);
 }
 
-function allowCors(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
 
 export default async function handler(req, res) {
-  allowCors(res);
+  if (!allowCors(req, res, 'GET,POST,OPTIONS')) return;
 
   if (req.method === 'OPTIONS') {
     res.status(204).end();
@@ -116,7 +112,7 @@ export default async function handler(req, res) {
       const updates = await fetchUpdates(code);
       send(res, 200, { code, updates });
     } catch (err) {
-      send(res, 500, { error: err.message || 'Failed to fetch updates' });
+      send(res, 500, { error: 'Request failed' });
     }
     return;
   }
@@ -127,22 +123,26 @@ export default async function handler(req, res) {
   }
 
   if (!SECRET) {
-    send(res, 500, { error: 'PARCEL_UPDATES_SECRET not set' });
+    send(res, 500, { error: 'Service unavailable' });
     return;
   }
 
+  if (!rateLimit(req, res, 'parcel-updates-requests', 180)) return;
   let body;
   try {
     body = await readBody(req);
   } catch (err) {
-    send(res, 500, { error: err.message || 'Database error' });
+    send(res, 500, { error: 'Request failed' });
     return;
   }
   const providedSecret = body.secret || body.secretKey || body.key;
-  if (providedSecret !== SECRET) {
+  if (!verifySecret(providedSecret, SECRET)) {
+    if (!rateLimit(req, res, 'parcel-updates-auth', 10)) return;
     send(res, 401, { error: 'Unauthorized' });
     return;
   }
+
+  if (body.action === 'verify') { res.status(200).json({ authenticated: true }); return; }
 
   const mode = String(body.mode || '').trim().toUpperCase();
   const code = normalizeCode(body.parcelCode || body.code || body.number);
@@ -186,7 +186,7 @@ export default async function handler(req, res) {
       return;
     }
   } catch (err) {
-    send(res, 500, { error: err.message || 'Database error' });
+    send(res, 500, { error: 'Request failed' });
     return;
   }
 

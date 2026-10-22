@@ -10,6 +10,7 @@ import { readBody } from '../server-lib/body.js';
 const fixtures = JSON.parse(readFileSync(new URL('./fixtures/acceptance.json', import.meta.url)));
 // Synthetic test-only authorization markers, never copied from an environment.
 process.env.PARCEL_UPDATES_SECRET = 'fixture-only';
+process.env.NEWS_ADMIN_SECRET = 'fixture-only';
 process.env.TRACK17_KEY = 'fixture-only';
 const handlers = Object.fromEntries(await Promise.all(
   ['carriers', 'track', 'news', 'news-post', 'parcel-updates'].map(async name =>
@@ -33,6 +34,7 @@ for (const fixture of fixtures.api) {
       };
       const raw = fixture.raw ?? (fixture.body ? JSON.stringify(fixture.body) : '');
       const req = Readable.from(representation === 'stream' ? [raw] : []);
+      req.socket = { remoteAddress: fixture.name + representation };
       req.method = fixture.method;
       req.query = fixture.query || {};
       if (representation === 'object') req.body = fixture.body;
@@ -49,7 +51,7 @@ for (const fixture of fixtures.api) {
         assert.equal(res.statusCode, fixture.status, representation);
         if (fixture.response) assert.deepEqual(res.body, fixture.response);
         if (fixture.catalog) assert.deepEqual(res.body, JSON.parse(readFileSync('carriers/apicarrier.all.json')));
-        assert.equal(headers['Access-Control-Allow-Origin'], '*');
+        assert.equal(headers['Access-Control-Allow-Origin'], undefined);
         assert.equal(globalThis.sqlQueue.length, 0, 'Expected SQL not executed');
         assert.equal(upstream.length, 0, 'Expected provider request not executed');
       } finally { globalThis.fetch = originalFetch; }

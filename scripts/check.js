@@ -6,7 +6,7 @@ for (const file of files) {
   const result = spawnSync(process.execPath, ['--check', file], { stdio: 'inherit' });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-const result = spawnSync(process.execPath,
-  ['--import', './tests/register.js', 'tests/acceptance.test.js'],
-  { stdio: 'inherit' });
-process.exit(result.status || (result.signal ? 1 : 0));
+for (const suite of ['tests/acceptance.test.js', 'tests/security.test.js']) {
+  const result = spawnSync(process.execPath, ['--import', './tests/register.js', suite], { stdio: 'inherit' });
+  if (result.status !== 0 || result.signal) process.exit(result.status || 1);
+}

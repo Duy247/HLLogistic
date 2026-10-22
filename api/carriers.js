@@ -1,12 +1,11 @@
+import { allowCors } from '../server-lib/security.js';
 import fs from 'fs';
 import path from 'path';
 
 const CARRIER_FILE = path.join(process.cwd(), 'carriers', 'apicarrier.all.json');
 
 export default function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (!allowCors(req, res, 'GET,OPTIONS')) return;
 
   if (req.method === 'OPTIONS') {
     res.status(204).end();
@@ -20,13 +19,13 @@ export default function handler(req, res) {
 
   try {
     if (!fs.existsSync(CARRIER_FILE)) {
-      res.status(500).json({ error: 'Carrier list file not found' });
+      res.status(500).json({ error: 'Service unavailable' });
       return;
     }
     const raw = fs.readFileSync(CARRIER_FILE, 'utf8');
     const data = JSON.parse(raw);
     res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to load carriers' });
+    res.status(500).json({ error: 'Request failed' });
   }
 }
