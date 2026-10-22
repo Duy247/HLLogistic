@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "@vercel/postgres": "^0.7.1",
-    "astro": "5.16.6"
+    "astro": "5.16.6",
+    "ultrahtml": "1.7.0",
+    "parse5": "7.3.0"
   },
   "type": "module",
   "engines": {

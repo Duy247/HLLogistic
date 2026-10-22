@@ -75,9 +75,15 @@
         );
     }
 
-    function renderPreview() {
+    async function renderPreview() {
         if (!previewEl) return;
-        previewEl.innerHTML = contentInput.value || "<p>Chưa có nội dung.</p>";
+        if (!secretKey) return;
+        var value = contentInput.value;
+        try {
+            var response = await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'preview', secret: secretKey, contentHtml: value }) });
+            var data = await response.json();
+            if (response.ok && value === contentInput.value) previewEl.srcdoc = data.contentHtml || '';
+        } catch { previewEl.srcdoc = ''; }
     }
 
     function schedulePreview() {
@@ -123,17 +129,16 @@
     }
 
     function renderList() {
-        postListEl.innerHTML = "";
+        postListEl.replaceChildren();
         posts.forEach(function (post) {
             var item = document.createElement("div");
             item.className = "post-item";
             item.dataset.id = post.id;
-            item.innerHTML =
-                "<h6>" +
-                (post.title || "Bài viết") +
-                "</h6><span>" +
-                formatDate(post.publishedAt) +
-                "</span>";
+            var heading = document.createElement('h6');
+            heading.textContent = post.title || 'Bài viết';
+            var date = document.createElement('span');
+            date.textContent = formatDate(post.publishedAt);
+            item.append(heading, date);
             item.addEventListener("click", function () {
                 loadPost(post.id);
             });
@@ -144,7 +149,7 @@
     async function fetchList() {
         setEditorStatus("Đang tải danh sách...");
         try {
-            var response = await fetch("/api/news?limit=50&offset=0");
+            var response = await fetch("/api/news?limit=50&offset=0", { headers: { "X-Admin-Secret": secretKey } });
             var data = await response.json();
             posts = Array.isArray(data.posts) ? data.posts : [];
             renderList();
@@ -157,7 +162,7 @@
     async function loadPost(id) {
         setEditorStatus("Đang tải bài viết...");
         try {
-            var response = await fetch("/api/news-post?id=" + encodeURIComponent(id));
+            var response = await fetch("/api/news-post?id=" + encodeURIComponent(id), { headers: { "X-Admin-Secret": secretKey } });
             var data = await response.json();
             if (!data.post) {
                 setEditorStatus("Không tìm thấy bài viết.");
@@ -256,26 +261,22 @@
         }
     }
 
-    function login() {
-        var secret = loginSecret.value.trim();
-        if (!secret) {
-            setLoginStatus("Hãy nhập secret.");
-            return;
-        }
-        secretKey = secret;
-        sessionStorage.setItem("newsAdminSecret", secretKey);
-        setLoginStatus("");
-        showAdmin();
-        fetchList();
-    }
-
-    function restoreSession() {
-        var stored = sessionStorage.getItem("newsAdminSecret");
-        if (stored) {
-            secretKey = stored;
+    async function login() {
+        var secret = loginSecret.value;
+        loginBtn.disabled = true;
+        try {
+            var response = await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'verify', secret: secret }) });
+            if (!response.ok) throw new Error();
+            secretKey = secret;
+            loginSecret.value = '';
+            setLoginStatus('');
             showAdmin();
             fetchList();
-        }
+        } catch { setLoginStatus('Không thể xác thực.'); }
+        finally { loginBtn.disabled = false; }
+    }
+    function restoreSession() {
+        sessionStorage.removeItem('newsAdminSecret');
     }
 
     loginBtn.addEventListener("click", login);

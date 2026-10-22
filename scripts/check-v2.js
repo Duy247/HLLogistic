@@ -5,7 +5,10 @@ assert.equal(files('public').filter(p => /\.(jpe?g|webp)$/i.test(p)).length,0,'P
 for (const route of ['index','contact','track','parcel-updates','admin-parcels','about','service','feature','price','team','testimonial','news','404']) {
  const html = readFileSync(`dist/${route}.html`,'utf8');
  assert.doesNotMatch(html,/google\.com\/maps|<iframe/);
- assert.doesNotMatch(html,/<input[^>]*type="password"/);
+ if (['parcel-updates','admin-parcels'].includes(route)) {
+  assert.match(html,/<input[^>]*type="password"[^>]*id="parcel-secret"/);
+  assert.match(html,/<fieldset[^>]*id="parcel-editor"[^>]*disabled/);
+ } else assert.doesNotMatch(html,/<input[^>]*type="password"/);
  if (['index','contact'].includes(route)) {
   assert.match(html,/class="honeypot" aria-hidden="true"/);
   assert.match(html,/<input[^>]*name="website"[^>]*tabindex="-1"[^>]*autocomplete="off"/);
@@ -18,4 +21,4 @@ for (const file of files('dist/_astro').filter(f => /\.(webp|jpe?g)$/i.test(f)))
  assert.equal(meta.exif,undefined,`${file}: EXIF must be stripped`);
  assert.equal(meta.xmp,undefined,`${file}: XMP must be stripped`);
 }
-console.log('V2 image pipeline, metadata removal, honeypots, static maps and secret-free parcel UI verified.');
+console.log('V2 image pipeline, metadata removal, honeypots, static maps and authenticated parcel UI verified.');

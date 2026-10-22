@@ -23,7 +23,8 @@
       "name": "track preflight",
       "handler": "track",
       "method": "OPTIONS",
-      "status": 204
+      "status": 204,
+      "upstream": []
     },
     {
       "name": "track unsupported method",
@@ -32,7 +33,8 @@
       "status": 405,
       "response": {
         "error": "Method not allowed"
-      }
+      },
+      "upstream": []
     },
     {
       "name": "carriers preflight",
@@ -108,7 +110,7 @@
       "status": 200,
       "sql": [
         {
-          "match": "from news.*limit",
+          "match": "from news.*where.*published_at is not null and published_at <= now\\(\\).*limit",
           "rows": [
             {
               "id": 7,
@@ -120,6 +122,7 @@
             }
           ],
           "values": [
+            false,
             6,
             0
           ]
@@ -151,7 +154,7 @@
       },
       "sql": [
         {
-          "match": "from news.*limit",
+          "match": "from news.*where.*published_at is not null and published_at <= now\\(\\).*limit",
           "rows": [
             {
               "id": 7,
@@ -323,6 +326,7 @@
             }
           ],
           "values": [
+            false,
             21,
             2
           ]
@@ -506,9 +510,10 @@
       },
       "sql": [
         {
-          "match": "from news",
+          "match": "from news.*where.*published_at is not null and published_at <= now\\(\\).*limit",
           "rows": [],
           "values": [
+            false,
             6,
             0
           ]
@@ -530,7 +535,7 @@
       },
       "sql": [
         {
-          "match": "from news",
+          "match": "from news.*where.*published_at is not null and published_at <= now\\(\\).*limit",
           "rows": [
             {
               "id": 7,
@@ -542,6 +547,7 @@
             }
           ],
           "values": [
+            false,
             1,
             0
           ]
@@ -560,12 +566,12 @@
       "status": 500,
       "sql": [
         {
-          "match": "from news",
+          "match": "from news.*where.*published_at is not null and published_at <= now\\(\\).*limit",
           "error": "Fixture database failure"
         }
       ],
       "response": {
-        "error": "Fixture database failure"
+        "error": "Request failed"
       }
     },
     {
@@ -600,7 +606,7 @@
       },
       "sql": [
         {
-          "match": "where id",
+          "match": "where id.*published_at is not null and published_at <= now\\(\\)",
           "rows": [
             {
               "id": 7,
@@ -614,7 +620,8 @@
             }
           ],
           "values": [
-            7
+            7,
+            false
           ]
         }
       ],
@@ -641,7 +648,7 @@
       },
       "sql": [
         {
-          "match": "where slug",
+          "match": "where slug.*published_at is not null and published_at <= now\\(\\)",
           "rows": [
             {
               "id": 7,
@@ -655,7 +662,8 @@
             }
           ],
           "values": [
-            "fixture-news"
+            "fixture-news",
+            false
           ]
         }
       ],
@@ -682,10 +690,11 @@
       },
       "sql": [
         {
-          "match": "where id",
+          "match": "where id.*published_at is not null and published_at <= now\\(\\)",
           "rows": [],
           "values": [
-            99
+            99,
+            false
           ]
         }
       ],
@@ -792,7 +801,7 @@
       }
     },
     {
-      "name": "news replace retains null date",
+      "name": "news replace can unpublish by clearing date",
       "handler": "news",
       "method": "PUT",
       "status": 200,
@@ -808,7 +817,7 @@
       },
       "sql": [
         {
-          "match": "update news.*coalesce",
+          "match": "update news.*published_at = \\?",
           "rows": [
             {
               "id": 7,
@@ -1785,8 +1794,9 @@
         "number": " "
       },
       "response": {
-        "error": "number is required"
-      }
+        "error": "Invalid tracking input"
+      },
+      "upstream": []
     },
     {
       "name": "track provider lifecycle explicit",
@@ -1836,35 +1846,12 @@
               ]
             }
           }
-        },
-        {
-          "path": "/deletetrack",
-          "body": [
-            {
-              "number": "FIXTURE001",
-              "carrier": 100001
-            }
-          ],
-          "status": 200,
-          "response": {
-            "data": {
-              "accepted": [
-                {
-                  "number": "FIXTURE001"
-                }
-              ]
-            }
-          }
         }
       ],
       "response": {
         "register": {
           "data": {
-            "accepted": [
-              {
-                "number": "FIXTURE001"
-              }
-            ]
+            "accepted": []
           }
         },
         "info": {
@@ -1877,15 +1864,7 @@
             ]
           }
         },
-        "stop": {
-          "data": {
-            "accepted": [
-              {
-                "number": "FIXTURE001"
-              }
-            ]
-          }
-        }
+        "stop": null
       }
     },
     {
@@ -1936,35 +1915,12 @@
               ]
             }
           }
-        },
-        {
-          "path": "/deletetrack",
-          "body": [
-            {
-              "number": "FIXTURE001",
-              "carrier": 100001
-            }
-          ],
-          "status": 200,
-          "response": {
-            "data": {
-              "accepted": [
-                {
-                  "number": "FIXTURE001"
-                }
-              ]
-            }
-          }
         }
       ],
       "response": {
         "register": {
           "data": {
-            "accepted": [
-              {
-                "number": "FIXTURE001"
-              }
-            ]
+            "accepted": []
           }
         },
         "info": {
@@ -1977,22 +1933,14 @@
             ]
           }
         },
-        "stop": {
-          "data": {
-            "accepted": [
-              {
-                "number": "FIXTURE001"
-              }
-            ]
-          }
-        }
+        "stop": null
       }
     },
     {
-      "name": "track embedded provider error retains HTTP 200",
+      "name": "track embedded provider error becomes generic gateway failure",
       "handler": "track",
       "method": "POST",
-      "status": 200,
+      "status": 502,
       "body": {
         "number": "FIXTURE001",
         "carrier": 100001
@@ -2019,16 +1967,7 @@
         }
       ],
       "response": {
-        "error": "Fixture rejection",
-        "detail": {
-          "data": {
-            "errors": [
-              {
-                "message": "Fixture rejection"
-              }
-            ]
-          }
-        }
+        "error": "Tracking service unavailable"
       }
     },
     {
@@ -2079,35 +2018,12 @@
               ]
             }
           }
-        },
-        {
-          "path": "/deletetrack",
-          "body": [
-            {
-              "number": "FIXTURE001",
-              "carrier": 1021
-            }
-          ],
-          "status": 200,
-          "response": {
-            "data": {
-              "accepted": [
-                {
-                  "number": "FIXTURE001"
-                }
-              ]
-            }
-          }
         }
       ],
       "response": {
         "register": {
           "data": {
-            "accepted": [
-              {
-                "number": "FIXTURE001"
-              }
-            ]
+            "accepted": []
           }
         },
         "info": {
@@ -2120,15 +2036,7 @@
             ]
           }
         },
-        "stop": {
-          "data": {
-            "accepted": [
-              {
-                "number": "FIXTURE001"
-              }
-            ]
-          }
-        }
+        "stop": null
       }
     },
     {
@@ -2179,35 +2087,12 @@
               ]
             }
           }
-        },
-        {
-          "path": "/deletetrack",
-          "body": [
-            {
-              "number": "FIXTURE001",
-              "carrier": 1021
-            }
-          ],
-          "status": 200,
-          "response": {
-            "data": {
-              "accepted": [
-                {
-                  "number": "FIXTURE001"
-                }
-              ]
-            }
-          }
         }
       ],
       "response": {
         "register": {
           "data": {
-            "accepted": [
-              {
-                "number": "FIXTURE001"
-              }
-            ]
+            "accepted": []
           }
         },
         "info": {
@@ -2220,15 +2105,7 @@
             ]
           }
         },
-        "stop": {
-          "data": {
-            "accepted": [
-              {
-                "number": "FIXTURE001"
-              }
-            ]
-          }
-        }
+        "stop": null
       }
     }
   ],
