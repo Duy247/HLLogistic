@@ -18,5 +18,7 @@ for (const route of fixtures.routes) {
   }
 }
 assert.deepEqual(readFileSync('dist/assets/logo-big.png'), readFileSync('public/assets/logo-big.png'));
-assert.deepEqual(readFileSync('dist/carriers/apicarrier.all.json'), readFileSync('carriers/apicarrier.all.json'));
+// Compare catalog values so equivalent JSON Unicode escapes preserve the contract.
+assert.deepEqual(JSON.parse(readFileSync('dist/carriers/apicarrier.all.json', 'utf8')),
+  JSON.parse(readFileSync('carriers/apicarrier.all.json', 'utf8')));
 console.log('Built legacy routes, linked assets, branding and carrier packaging verified.');

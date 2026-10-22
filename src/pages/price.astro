@@ -1,223 +1,381 @@
 ---
-import LegacyScripts from '../components/LegacyScripts.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
+import Layout from "../layouts/V2Layout.astro";
 ---
-<BaseLayout title="HL Trung Việt Logistics - Bảng giá" bodyClass="" standardHead={true}>
-
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
+<Layout title="Bảng giá · HL Trung Việt Logistics">
+  <section class="tint">
+    <div class="wrap section page-intro">
+      <p class="eyebrow">HL TRUNG VIỆT LOGISTICS / RATES</p>
+      <h1 data-en="Rates">Bảng giá</h1>
+      <a class="text-link" href="index.html" data-en="Home ↗">Trang chủ ↗</a>
     </div>
-    <!-- Spinner End -->
-
-
-    <!-- Navbar Start -->
-    <Navbar />
-    <!-- Navbar End -->
-
-
-    <!-- Page Header Start -->
-    <div class="container-fluid page-header py-5" style="margin-bottom: 6rem;">
-        <div class="container py-5">
-            <h1 class="display-3 text-white mb-3 animated slideInDown">Bảng giá</h1>
-            <nav aria-label="breadcrumb animated slideInDown">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Trang chủ</a></li>
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Trang</a></li>
-                    <li class="breadcrumb-item text-white active" aria-current="page">Bảng giá</li>
-                </ol>
-            </nav>
-        </div>
+  </section>
+  <section class="wrap section rates-page">
+    <h2>Bảng giá</h2>
+    <h2>Dịch vụ HL Trung Việt Logistics</h2>
+    <h3>1. Danh sách phí</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Danh sách phí</th>
+            <th scope="col">Giải thích</th>
+            <th scope="col">Bắt buộc</th>
+            <th scope="col">Tùy chọn</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Giá sản phẩm</td>
+            <td>Giá niêm yết trên website Trung Quốc</td>
+            <td>Có</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td>2. Phí dịch vụ</td>
+            <td>Phí giao dịch mua hàng khách trả cho HL Trung Việt Logistics</td>
+            <td>Có</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td>3. Phí ship Trung Quốc</td>
+            <td>Chuyển từ nhà cung cấp tới kho HL Trung Việt Logistics tại Trung Quốc</td>
+            <td>Có</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td>4. Phí vận chuyển</td>
+            <td>Từ kho Trung Quốc về kho HL Trung Việt Logistics tại Việt Nam (Kg)</td>
+            <td>
+            </td>
+            <td>Không</td>
+          </tr>
+          <tr>
+            <td>5. Phí kiểm đếm</td>
+            <td>Đảm bảo không giao thiếu/sai</td>
+            <td>Có</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td>6. Phí đóng gỗ</td>
+            <td>Bảo vệ hàng hóa, giảm hư hỏng</td>
+            <td>
+            </td>
+            <td>Có</td>
+          </tr>
+          <tr>
+            <td>7. Phí vận chuyển nội địa Việt Nam</td>
+            <td>Ship từ kho HL Trung Việt Logistics tại Việt Nam tới địa chỉ khách</td>
+            <td>
+            </td>
+            <td>Có</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <!-- Page Header End -->
-
-
-    <!-- Pricing Start -->
-    <div class="container-xxl py-5 striped-section">
-        <div class="container py-5">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h2 class="text-secondary text-uppercase">Bảng giá</h2>
-                <h1 class="mb-4">Dịch vụ HL Trung Việt Logistics</h1>
-            </div>
-
-            <div class="bg-white p-4 rounded shadow-sm mb-4 wow fadeInUp" data-wow-delay="0.2s" style="border-left: 4px solid var(--primary);">
-                <h3 class="mb-3">1. Danh sách phí</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle">
-                        <thead class="table-success" style="background: var(--stripe-light);">
-                            <tr>
-                                <th>Danh sách phí</th>
-                                <th>Giải thích</th>
-                                <th>Bắt buộc</th>
-                                <th>Tùy chọn</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>1. Giá sản phẩm</td><td>Giá niêm yết trên website Trung Quốc</td><td>Có</td><td></td></tr>
-                            <tr><td>2. Phí dịch vụ</td><td>Phí giao dịch mua hàng khách trả cho HL Trung Việt Logistics</td><td>Có</td><td></td></tr>
-                            <tr><td>3. Phí ship Trung Quốc</td><td>Chuyển từ nhà cung cấp tới kho HL Trung Việt Logistics tại Trung Quốc</td><td>Có</td><td></td></tr>
-                            <tr><td>4. Phí vận chuyển</td><td>Từ kho Trung Quốc về kho HL Trung Việt Logistics tại Việt Nam (Kg)</td><td></td><td>Không</td></tr>
-                            <tr><td>5. Phí kiểm đếm</td><td>Đảm bảo không giao thiếu/sai</td><td>Có</td><td></td></tr>
-                            <tr><td>6. Phí đóng gỗ</td><td>Bảo vệ hàng hóa, giảm hư hỏng</td><td></td><td>Có</td></tr>
-                            <tr><td>7. Phí vận chuyển nội địa Việt Nam</td><td>Ship từ kho HL Trung Việt Logistics tại Việt Nam tới địa chỉ khách</td><td></td><td>Có</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded shadow-sm mb-4 wow fadeInUp" data-wow-delay="0.3s" style="border-left: 4px solid var(--secondary);">
-                <h3 class="mb-3">2. Phí dịch vụ mua hộ</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle">
-                        <thead class="table-success" style="background: var(--stripe-light);">
-                            <tr>
-                                <th>Giá trị đơn hàng</th>
-                                <th>% phí dịch vụ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Từ 0 đến dưới 1 triệu (taobao, 1688)</td><td>2%</td></tr>
-                            <tr><td>1 triệu – dưới 10 triệu (taobao, 1688)</td><td>2%</td></tr>
-                            <tr><td>10 triệu – dưới 100 triệu (taobao, 1688)</td><td>2%</td></tr>
-                            <tr><td>100 triệu – dưới 500 triệu (taobao, 1688)</td><td>1% – 2%</td></tr>
-                            <tr><td>0 – dưới 500 triệu (ứng dụng khác: pinduduo, xianyu...)</td><td>1% – 2%</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded shadow-sm mb-4 wow fadeInUp" data-wow-delay="0.4s" style="border-left: 4px solid var(--primary);">
-                <h3 class="mb-3">3. Phí ship Trung Quốc</h3>
-                <h5 class="mb-2">+ Hàng rời, hàng lẻ</h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle">
-                        <thead class="table-success" style="background: #e6f5ea;">
-                            <tr>
-                                <th>Trọng lượng</th>
-                                <th>Vận chuyển line TMĐT</th>
-                                <th>Vận chuyển line nhanh</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Dưới 10 kg</td><td>26,000 VNĐ/kg</td><td>32,000 VNĐ/kg</td></tr>
-                            <tr><td>10 kg → dưới 50 kg</td><td>26,000 VNĐ/kg</td><td>30,000 VNĐ/kg</td></tr>
-                            <tr><td>50 kg → dưới 100 kg</td><td>26,000 VNĐ/kg</td><td>25,000 VNĐ/kg</td></tr>
-                            <tr><td>Thời gian vận chuyển</td><td>3 – 4 ngày</td><td>1 – 2 ngày</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p class="small text-muted mb-0">Ghi chú: Bảng giá mang tính tham khảo, vui lòng liên hệ hotline 0966 862 355 để nhận báo giá tối ưu cho từng lô hàng.</p>
-            </div>
-
-            <div class="bg-white p-4 rounded shadow-sm mb-4 wow fadeInUp" data-wow-delay="0.5s" style="border-left: 4px solid var(--secondary);">
-                <h3 class="mb-3">4. Bảng giá vận chuyển Bằng Tường → Hà Nội</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle">
-                        <thead class="table-light" style="background: var(--stripe-light);">
-                            <tr>
-                                <th>STT</th>
-                                <th>VẬN CHUYỂN HÀNG LẺ</th>
-                                <th>GIÁ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td class="fw-semibold">1</td><td class="fw-semibold">Hàng phổ thông &le; 250kg/m3 &lt; 10m3</td><td>1.600.000 vnd /m3</td></tr>
-                            <tr><td></td><td>Hàng phổ thông &ge; 10m3</td><td>1.550.000 vnd /m3</td></tr>
-                            <tr><td></td><td>Loại 2 : từ 250kg &ge; 500kg/m3</td><td>6.000 vnd /kg</td></tr>
-                            <tr><td></td><td>Loại 3 : 500kg &ge; 1000 kg/ m3</td><td>4.000 vnd /kg</td></tr>
-                            <tr><td></td><td>Loại 4 : 1000kg &ge; 1500kg/m3</td><td>3.000 vnd /kg</td></tr>
-                            <tr><td></td><td>Loại 5 : hàng hóa &ge; 1500kg/m3</td><td>2.500 vnd /kg</td></tr>
-                            <tr><td></td><td>Loại 6 : hàng hóa &ge; 1500kg/m3 ( có đóng pallet hoặc cuộn hàng tối thiểu &gt; 30 tấn )</td><td>2.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">2</td><td class="fw-semibold">Hàng ắc quy</td><td>8.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">3</td><td class="fw-semibold">Hàng vải may mặc</td><td>9.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">4</td><td class="fw-semibold">Hàng mỹ phẩm</td><td></td></tr>
-                            <tr><td></td><td>Loại 1 : Hàng hóa &le; 250kg/ m3</td><td>1.950.000/m3</td></tr>
-                            <tr><td></td><td>Loại 2 : Hàng hóa &ge; 250kg/m3</td><td>8.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">5</td><td class="fw-semibold">Hàng Fake , hàng nhái , thương hiệu</td><td></td></tr>
-                            <tr><td></td><td>Loại 1 : Hàng hóa &le; 250kg/ m3</td><td>1.950.000 vnd /m3</td></tr>
-                            <tr><td></td><td>Loại 2 : Hàng hóa &ge; 250kg/m3</td><td>8.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">6</td><td class="fw-semibold">Hàng máy móc mới và cũ</td><td></td></tr>
-                            <tr><td></td><td>Loại 1 : Hàng hóa &le; 250kg/ m3</td><td>1.950.000 vnd /m3</td></tr>
-                            <tr><td></td><td>Loại 2 : Hàng hóa &ge; 250kg/m3</td><td>8.000 vnd /kg</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-3 small">
-                    <p class="fw-semibold mb-2">Lưu ý quan trọng:</p>
-                    <ul class="mb-0">
-                        <li>Bảo quan 2 đầu hàng nguyên cont 70m3,100m3,150m3 ( xe chạy thẳng được từ xưởng trung quốc sang bãi Lạng Sơn , khách hàng cần gửi chi tiết cổng loại hàng hóa để được báo giá chi tiết và cụ thể )</li>
-                        <li>Công ty không nhận các mặt hàng sau đây, nếu đóng vào hong hóc mất công ty không chịu trách nhiệm: rượu, kem đánh răng Sensodyne, thuốc lá điện tử, thuốc tây, đồ chơi tình dục, đồ chơi bạo lực như súng, kiếm, các loại pháo, sách báo, đồ liên quan y tế, pin sạc dự phòng, bật lửa, bộ phận đánh lửa, flycam....</li>
-                        <li>Hàng về Hà Nội nếu &gt;1000kg hoặc &gt;10m3 trên 1 mã hàng công ty sẽ bao giao 1 điểm nội thành, nếu thấp hơn thì công ty chỉ trả tại kho hoặc giao có phí.</li>
-                        <li>Trường hợp vận chuyển không may hong hóc, mất mát hoặc thất lạc, công ty đền 100% giá trị hàng hóa ( tối đa 8 lần cước vận chuyển và không quá 3 triệu/kiện), quý khách chụp ảnh và phản hồi rõ tình trạng hàng hóa muộn nhất sau 02 ngày kể từ ngày nhận hàng. Trường hợp khách hàng lưu tại kho Hà Nội quá 02 ngày, hàng hóa có phát sinh vấn đề công ty sẽ không chịu trách nhiệm giải quyết.</li>
-                        <li>Đối với mặt hàng giá trị cao (lớn hơn 8 lần cước vận chuyển hoặc 3 triệu/kiện), khách hàng có thể chọn hình thức mua bảo hiểm, phí bảo hiểm được tính phụ thu thêm 10% dựa trên giá trị khai báo hàng hóa. Công ty sẽ chịu trách nhiệm và đền bù 100% giá trị hàng hóa khi xảy ra tình trạng hong hóc, mất mát hoặc thất lạc.</li>
-                        <li>Hàng nhận từ Quảng Châu về công thêm 2.000 vnd /kg và 400.000 vnd /m3</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded shadow-sm wow fadeInUp" data-wow-delay="0.6s" style="border-left: 4px solid var(--secondary);">
-                <h3 class="mb-3">5. Bảng giá vận chuyển Bằng Tường → Hồ Chí Minh</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle">
-                        <thead class="table-light" style="background: var(--stripe-light);">
-                            <tr>
-                                <th>STT</th>
-                                <th>VẬN CHUYỂN HÀNG LẺ</th>
-                                <th>GIÁ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td class="fw-semibold">1</td><td class="fw-semibold">Hàng phổ thông &le; 250kg/m3</td><td>2.150.000 vnd /m3</td></tr>
-                            <tr><td></td><td>Loại 2 : từ 250kg &ge; 500kg/m3</td><td>8.000 vnd /kg</td></tr>
-                            <tr><td></td><td>Loại 3 : 500kg &ge; 1000 kg/ m3</td><td>5.500 vnd /kg</td></tr>
-                            <tr><td></td><td>Loại 4 : Hàng hóa &ge; 1000kg / m3</td><td>5.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">2</td><td class="fw-semibold">Hàng ắc quy</td><td>10.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">3</td><td class="fw-semibold">Hàng vải may mặc</td><td>10.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">4</td><td class="fw-semibold" colspan="2">Hàng Fake , hàng nhái , thương hiệu</td></tr>
-                            <tr><td></td><td>Loại 1 : Hàng hóa &le; 250kg/ m3</td><td>2.400.000 vnd /m3</td></tr>
-                            <tr><td></td><td>Loại 2 : Hàng hóa &ge; 250kg/m3</td><td>10.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">5</td><td class="fw-semibold" colspan="2">Hàng mỹ phẩm</td></tr>
-                            <tr><td></td><td>Loại 1 : Hàng hóa &le; 250kg/ m3</td><td>2.500.000/m3</td></tr>
-                            <tr><td></td><td>Loại 2 : Hàng hóa &ge; 250kg/m3</td><td>10.000 vnd /kg</td></tr>
-                            <tr><td class="fw-semibold">6</td><td class="fw-semibold" colspan="2">Hàng máy móc mới và cũ</td></tr>
-                            <tr><td></td><td>Loại 1 : Hàng hóa &le; 250kg/ m3</td><td>2.400.000 vnd /m3</td></tr>
-                            <tr><td></td><td>Loại 2 : Hàng hóa &ge; 250kg/m3</td><td>10.000 vnd /kg</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-3 small">
-                    <p class="fw-semibold mb-2">Lưu ý quan trọng:</p>
-                    <ul class="mb-0">
-                        <li>Không nhận: rượu, kem đánh răng Sensodyne, thuốc lá điện tử, thuốc tây, đồ chơi tình dục, đồ chơi bạo lực (súng, kiếm), pháo, sách báo, đồ y tế, pin sạc dự phòng, bật lửa/bộ phận đánh lửa, flycam,...</li>
-                        <li>Hàng về Hà Nội: nếu &gt;500kg hoặc &gt;5m3/mã sẽ bao giao 1 điểm nội thành; thấp hơn trả tại kho hoặc giao có phí.</li>
-                        <li>Sự cố hỏng/mất: đền 100% giá trị (tối đa 8 lần cước và không quá 3 triệu/kiện); phản hồi trong 02 ngày từ khi nhận hàng. Lưu kho Hà Nội quá 02 ngày: công ty không chịu trách nhiệm.</li>
-                        <li>Hàng giá trị cao (&gt;8 lần cước hoặc &gt;3 triệu/kiện): có thể mua bảo hiểm, phụ thu 10% giá trị khai báo; đền 100% khi có sự cố.</li>
-                        <li>Nhận hàng tại Quảng Châu: +2.000đ/kg và +400.000đ/m3.</li>
-                        <li>Chỉ nhận đơn ≥100kg hoặc ≥0.5m3; nếu dưới mức này phụ thu 2.000đ/kg và 200.000đ/m3.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    <h3>2. Phí dịch vụ mua hộ</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Giá trị đơn hàng</th>
+            <th scope="col">% phí dịch vụ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Từ 0 đến dưới 1 triệu (taobao, 1688)</td>
+            <td>2%</td>
+          </tr>
+          <tr>
+            <td>1 triệu – dưới 10 triệu (taobao, 1688)</td>
+            <td>2%</td>
+          </tr>
+          <tr>
+            <td>10 triệu – dưới 100 triệu (taobao, 1688)</td>
+            <td>2%</td>
+          </tr>
+          <tr>
+            <td>100 triệu – dưới 500 triệu (taobao, 1688)</td>
+            <td>1% – 2%</td>
+          </tr>
+          <tr>
+            <td>0 – dưới 500 triệu (ứng dụng khác: pinduduo, xianyu...)</td>
+            <td>1% – 2%</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <!-- Pricing End -->
-        
-
-    <Footer />
-
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
-    <LegacyScripts />
-
-    <!-- Template Javascript -->
-    <script is:inline src="/js/navigation.js"></script>
-    <script is:inline src="js/main.js"></script>
-
-</BaseLayout>
+    <h3>3. Phí ship Trung Quốc</h3>
+    <h4>+ Hàng rời, hàng lẻ</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Trọng lượng</th>
+            <th scope="col">Vận chuyển line TMĐT</th>
+            <th scope="col">Vận chuyển line nhanh</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dưới 10 kg</td>
+            <td>26,000 VNĐ/kg</td>
+            <td>32,000 VNĐ/kg</td>
+          </tr>
+          <tr>
+            <td>10 kg → dưới 50 kg</td>
+            <td>26,000 VNĐ/kg</td>
+            <td>30,000 VNĐ/kg</td>
+          </tr>
+          <tr>
+            <td>50 kg → dưới 100 kg</td>
+            <td>26,000 VNĐ/kg</td>
+            <td>25,000 VNĐ/kg</td>
+          </tr>
+          <tr>
+            <td>Thời gian vận chuyển</td>
+            <td>3 – 4 ngày</td>
+            <td>1 – 2 ngày</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Ghi chú: Bảng giá mang tính tham khảo, vui lòng liên hệ hotline 0966 862 355 để nhận báo giá tối ưu cho từng lô hàng.</p>
+    <h3>4. Bảng giá vận chuyển Bằng Tường → Hà Nội</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">VẬN CHUYỂN HÀNG LẺ</th>
+            <th scope="col">GIÁ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Hàng phổ thông &le; 250kg/m3 &lt; 10m3</td>
+            <td>1.600.000 vnd /m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Hàng phổ thông &ge; 10m3</td>
+            <td>1.550.000 vnd /m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 2 : từ 250kg &ge; 500kg/m3</td>
+            <td>6.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 3 : 500kg &ge; 1000 kg/ m3</td>
+            <td>4.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 4 : 1000kg &ge; 1500kg/m3</td>
+            <td>3.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 5 : hàng hóa &ge; 1500kg/m3</td>
+            <td>2.500 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 6 : hàng hóa &ge; 1500kg/m3 ( có đóng pallet hoặc cuộn hàng tối thiểu &gt; 30 tấn )</td>
+            <td>2.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Hàng ắc quy</td>
+            <td>8.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Hàng vải may mặc</td>
+            <td>9.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Hàng mỹ phẩm</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 1 : Hàng hóa &le; 250kg/ m3</td>
+            <td>1.950.000/m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 2 : Hàng hóa &ge; 250kg/m3</td>
+            <td>8.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Hàng Fake , hàng nhái , thương hiệu</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 1 : Hàng hóa &le; 250kg/ m3</td>
+            <td>1.950.000 vnd /m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 2 : Hàng hóa &ge; 250kg/m3</td>
+            <td>8.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Hàng máy móc mới và cũ</td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 1 : Hàng hóa &le; 250kg/ m3</td>
+            <td>1.950.000 vnd /m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 2 : Hàng hóa &ge; 250kg/m3</td>
+            <td>8.000 vnd /kg</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Lưu ý quan trọng:</p>
+    <ul>
+      <li>Bảo quan 2 đầu hàng nguyên cont 70m3,100m3,150m3 ( xe chạy thẳng được từ xưởng trung quốc sang bãi Lạng Sơn , khách hàng cần gửi chi tiết cổng loại hàng hóa để được báo giá chi tiết và cụ thể )</li>
+      <li>Công ty không nhận các mặt hàng sau đây, nếu đóng vào hong hóc mất công ty không chịu trách nhiệm: rượu, kem đánh răng Sensodyne, thuốc lá điện tử, thuốc tây, đồ chơi tình dục, đồ chơi bạo lực như súng, kiếm, các loại pháo, sách báo, đồ liên quan y tế, pin sạc dự phòng, bật lửa, bộ phận đánh lửa, flycam....</li>
+      <li>Hàng về Hà Nội nếu &gt;1000kg hoặc &gt;10m3 trên 1 mã hàng công ty sẽ bao giao 1 điểm nội thành, nếu thấp hơn thì công ty chỉ trả tại kho hoặc giao có phí.</li>
+      <li>Trường hợp vận chuyển không may hong hóc, mất mát hoặc thất lạc, công ty đền 100% giá trị hàng hóa ( tối đa 8 lần cước vận chuyển và không quá 3 triệu/kiện), quý khách chụp ảnh và phản hồi rõ tình trạng hàng hóa muộn nhất sau 02 ngày kể từ ngày nhận hàng. Trường hợp khách hàng lưu tại kho Hà Nội quá 02 ngày, hàng hóa có phát sinh vấn đề công ty sẽ không chịu trách nhiệm giải quyết.</li>
+      <li>Đối với mặt hàng giá trị cao (lớn hơn 8 lần cước vận chuyển hoặc 3 triệu/kiện), khách hàng có thể chọn hình thức mua bảo hiểm, phí bảo hiểm được tính phụ thu thêm 10% dựa trên giá trị khai báo hàng hóa. Công ty sẽ chịu trách nhiệm và đền bù 100% giá trị hàng hóa khi xảy ra tình trạng hong hóc, mất mát hoặc thất lạc.</li>
+      <li>Hàng nhận từ Quảng Châu về công thêm 2.000 vnd /kg và 400.000 vnd /m3</li>
+    </ul>
+    <h3>5. Bảng giá vận chuyển Bằng Tường → Hồ Chí Minh</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">VẬN CHUYỂN HÀNG LẺ</th>
+            <th scope="col">GIÁ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Hàng phổ thông &le; 250kg/m3</td>
+            <td>2.150.000 vnd /m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 2 : từ 250kg &ge; 500kg/m3</td>
+            <td>8.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 3 : 500kg &ge; 1000 kg/ m3</td>
+            <td>5.500 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 4 : Hàng hóa &ge; 1000kg / m3</td>
+            <td>5.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Hàng ắc quy</td>
+            <td>10.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Hàng vải may mặc</td>
+            <td>10.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td colspan="2">Hàng Fake , hàng nhái , thương hiệu</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 1 : Hàng hóa &le; 250kg/ m3</td>
+            <td>2.400.000 vnd /m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 2 : Hàng hóa &ge; 250kg/m3</td>
+            <td>10.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td colspan="2">Hàng mỹ phẩm</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 1 : Hàng hóa &le; 250kg/ m3</td>
+            <td>2.500.000/m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 2 : Hàng hóa &ge; 250kg/m3</td>
+            <td>10.000 vnd /kg</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td colspan="2">Hàng máy móc mới và cũ</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 1 : Hàng hóa &le; 250kg/ m3</td>
+            <td>2.400.000 vnd /m3</td>
+          </tr>
+          <tr>
+            <td>
+            </td>
+            <td>Loại 2 : Hàng hóa &ge; 250kg/m3</td>
+            <td>10.000 vnd /kg</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Lưu ý quan trọng:</p>
+    <ul>
+      <li>Không nhận: rượu, kem đánh răng Sensodyne, thuốc lá điện tử, thuốc tây, đồ chơi tình dục, đồ chơi bạo lực (súng, kiếm), pháo, sách báo, đồ y tế, pin sạc dự phòng, bật lửa/bộ phận đánh lửa, flycam,...</li>
+      <li>Hàng về Hà Nội: nếu &gt;500kg hoặc &gt;5m3/mã sẽ bao giao 1 điểm nội thành; thấp hơn trả tại kho hoặc giao có phí.</li>
+      <li>Sự cố hỏng/mất: đền 100% giá trị (tối đa 8 lần cước và không quá 3 triệu/kiện); phản hồi trong 02 ngày từ khi nhận hàng. Lưu kho Hà Nội quá 02 ngày: công ty không chịu trách nhiệm.</li>
+      <li>Hàng giá trị cao (&gt;8 lần cước hoặc &gt;3 triệu/kiện): có thể mua bảo hiểm, phụ thu 10% giá trị khai báo; đền 100% khi có sự cố.</li>
+      <li>Nhận hàng tại Quảng Châu: +2.000đ/kg và +400.000đ/m3.</li>
+      <li>Chỉ nhận đơn ≥100kg hoặc ≥0.5m3; nếu dưới mức này phụ thu 2.000đ/kg và 200.000đ/m3.</li>
+    </ul>
+  </section>
+</Layout>
