@@ -1,0 +1,2256 @@
+{
+  "routes": [
+    "/",
+    "/index.html",
+    "/about.html",
+    "/service.html",
+    "/price.html",
+    "/feature.html",
+    "/team.html",
+    "/testimonial.html",
+    "/contact.html",
+    "/404.html",
+    "/track.html",
+    "/news.html",
+    "/news-admin.html",
+    "/parcel-updates.html",
+    "/parcel-updates-mobile.html",
+    "/track.html?number=FIXTURE001&carrier=100001&carrierText=Fixture",
+    "/news.html?id=7"
+  ],
+  "api": [
+    {
+      "name": "track preflight",
+      "handler": "track",
+      "method": "OPTIONS",
+      "status": 204
+    },
+    {
+      "name": "track unsupported method",
+      "handler": "track",
+      "method": "PATCH",
+      "status": 405,
+      "response": {
+        "error": "Method not allowed"
+      }
+    },
+    {
+      "name": "carriers preflight",
+      "handler": "carriers",
+      "method": "OPTIONS",
+      "status": 204
+    },
+    {
+      "name": "carriers unsupported method",
+      "handler": "carriers",
+      "method": "PATCH",
+      "status": 405,
+      "response": {
+        "error": "Method not allowed"
+      }
+    },
+    {
+      "name": "news preflight",
+      "handler": "news",
+      "method": "OPTIONS",
+      "status": 204
+    },
+    {
+      "name": "news unsupported method",
+      "handler": "news",
+      "method": "PATCH",
+      "status": 405,
+      "response": {
+        "error": "Method not allowed"
+      }
+    },
+    {
+      "name": "news-post preflight",
+      "handler": "news-post",
+      "method": "OPTIONS",
+      "status": 204
+    },
+    {
+      "name": "news-post unsupported method",
+      "handler": "news-post",
+      "method": "PATCH",
+      "status": 405,
+      "response": {
+        "error": "Method not allowed"
+      }
+    },
+    {
+      "name": "parcel-updates preflight",
+      "handler": "parcel-updates",
+      "method": "OPTIONS",
+      "status": 204
+    },
+    {
+      "name": "parcel-updates unsupported method",
+      "handler": "parcel-updates",
+      "method": "PATCH",
+      "status": 405,
+      "response": {
+        "error": "Method not allowed"
+      }
+    },
+    {
+      "name": "carrier catalog passthrough",
+      "handler": "carriers",
+      "method": "GET",
+      "status": 200,
+      "catalog": true
+    },
+    {
+      "name": "news default pagination",
+      "handler": "news",
+      "method": "GET",
+      "status": 200,
+      "sql": [
+        {
+          "match": "from news.*limit",
+          "rows": [
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            }
+          ],
+          "values": [
+            6,
+            0
+          ]
+        }
+      ],
+      "response": {
+        "posts": [
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          }
+        ],
+        "hasMore": false,
+        "nextOffset": 1
+      }
+    },
+    {
+      "name": "news capped pagination retains nextOffset",
+      "handler": "news",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "limit": "50",
+        "offset": "2"
+      },
+      "sql": [
+        {
+          "match": "from news.*limit",
+          "rows": [
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            },
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            }
+          ],
+          "values": [
+            21,
+            2
+          ]
+        }
+      ],
+      "response": {
+        "posts": [
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          },
+          {
+            "id": 7,
+            "title": "Fixture news",
+            "summary": null,
+            "coverUrl": null,
+            "slug": "fixture-news",
+            "publishedAt": null
+          }
+        ],
+        "hasMore": true,
+        "nextOffset": 22
+      }
+    },
+    {
+      "name": "news invalid pagination fallback",
+      "handler": "news",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "limit": "-1",
+        "offset": "bad"
+      },
+      "sql": [
+        {
+          "match": "from news",
+          "rows": [],
+          "values": [
+            6,
+            0
+          ]
+        }
+      ],
+      "response": {
+        "posts": [],
+        "hasMore": false,
+        "nextOffset": 0
+      }
+    },
+    {
+      "name": "news zero limit",
+      "handler": "news",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "limit": "0"
+      },
+      "sql": [
+        {
+          "match": "from news",
+          "rows": [
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null
+            }
+          ],
+          "values": [
+            1,
+            0
+          ]
+        }
+      ],
+      "response": {
+        "posts": [],
+        "hasMore": true,
+        "nextOffset": 0
+      }
+    },
+    {
+      "name": "news database error",
+      "handler": "news",
+      "method": "GET",
+      "status": 500,
+      "sql": [
+        {
+          "match": "from news",
+          "error": "Fixture database failure"
+        }
+      ],
+      "response": {
+        "error": "Fixture database failure"
+      }
+    },
+    {
+      "name": "post needs selector",
+      "handler": "news-post",
+      "method": "GET",
+      "status": 400,
+      "response": {
+        "error": "id or slug is required"
+      }
+    },
+    {
+      "name": "post invalid id",
+      "handler": "news-post",
+      "method": "GET",
+      "status": 400,
+      "query": {
+        "id": "bad"
+      },
+      "response": {
+        "error": "id must be a number"
+      }
+    },
+    {
+      "name": "post lookup {'id': '7', 'slug': 'ignored'}",
+      "handler": "news-post",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "id": "7",
+        "slug": "ignored"
+      },
+      "sql": [
+        {
+          "match": "where id",
+          "rows": [
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null,
+              "contentHtml": "<p>Fixture content</p>",
+              "createdAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            7
+          ]
+        }
+      ],
+      "response": {
+        "post": {
+          "id": 7,
+          "title": "Fixture news",
+          "summary": null,
+          "coverUrl": null,
+          "slug": "fixture-news",
+          "publishedAt": null,
+          "contentHtml": "<p>Fixture content</p>",
+          "createdAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "post lookup {'slug': 'fixture-news'}",
+      "handler": "news-post",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "slug": "fixture-news"
+      },
+      "sql": [
+        {
+          "match": "where slug",
+          "rows": [
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null,
+              "contentHtml": "<p>Fixture content</p>",
+              "createdAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "fixture-news"
+          ]
+        }
+      ],
+      "response": {
+        "post": {
+          "id": 7,
+          "title": "Fixture news",
+          "summary": null,
+          "coverUrl": null,
+          "slug": "fixture-news",
+          "publishedAt": null,
+          "contentHtml": "<p>Fixture content</p>",
+          "createdAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "post missing row",
+      "handler": "news-post",
+      "method": "GET",
+      "status": 404,
+      "query": {
+        "id": "99"
+      },
+      "sql": [
+        {
+          "match": "where id",
+          "rows": [],
+          "values": [
+            99
+          ]
+        }
+      ],
+      "response": {
+        "error": "Post not found"
+      }
+    },
+    {
+      "name": "news unauthorized POST",
+      "handler": "news",
+      "method": "POST",
+      "status": 401,
+      "body": {
+        "secret": "wrong"
+      },
+      "response": {
+        "error": "Unauthorized"
+      }
+    },
+    {
+      "name": "news unauthorized PUT",
+      "handler": "news",
+      "method": "PUT",
+      "status": 401,
+      "body": {
+        "secret": "wrong"
+      },
+      "response": {
+        "error": "Unauthorized"
+      }
+    },
+    {
+      "name": "news unauthorized DELETE",
+      "handler": "news",
+      "method": "DELETE",
+      "status": 401,
+      "body": {
+        "secret": "wrong"
+      },
+      "response": {
+        "error": "Unauthorized"
+      }
+    },
+    {
+      "name": "news required content",
+      "handler": "news",
+      "method": "POST",
+      "status": 400,
+      "body": {
+        "secret": "fixture-only",
+        "title": "Fixture"
+      },
+      "response": {
+        "error": "title and contentHtml are required"
+      }
+    },
+    {
+      "name": "news create defaults and slug",
+      "handler": "news",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secretKey": "fixture-only",
+        "title": " Fixture news ",
+        "contentHtml": " <p>Fixture content</p> ",
+        "summary": "",
+        "coverUrl": "",
+        "publishedAt": null
+      },
+      "sql": [
+        {
+          "match": "insert into news",
+          "rows": [
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null,
+              "createdAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "Fixture news",
+            null,
+            null,
+            "<p>Fixture content</p>",
+            "fixture-news",
+            null
+          ]
+        }
+      ],
+      "response": {
+        "post": {
+          "id": 7,
+          "title": "Fixture news",
+          "summary": null,
+          "coverUrl": null,
+          "slug": "fixture-news",
+          "publishedAt": null,
+          "createdAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "news replace retains null date",
+      "handler": "news",
+      "method": "PUT",
+      "status": 200,
+      "body": {
+        "secretKey": "fixture-only",
+        "title": " Fixture news ",
+        "contentHtml": " <p>Fixture content</p> ",
+        "summary": "",
+        "coverUrl": "",
+        "publishedAt": null,
+        "id": 7,
+        "key": "fixture-only"
+      },
+      "sql": [
+        {
+          "match": "update news.*coalesce",
+          "rows": [
+            {
+              "id": 7,
+              "title": "Fixture news",
+              "summary": null,
+              "coverUrl": null,
+              "slug": "fixture-news",
+              "publishedAt": null,
+              "updatedAt": "2026-10-02T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "Fixture news",
+            null,
+            null,
+            "<p>Fixture content</p>",
+            "fixture-news",
+            null,
+            7
+          ]
+        }
+      ],
+      "response": {
+        "post": {
+          "id": 7,
+          "title": "Fixture news",
+          "summary": null,
+          "coverUrl": null,
+          "slug": "fixture-news",
+          "publishedAt": null,
+          "updatedAt": "2026-10-02T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "news update requires id",
+      "handler": "news",
+      "method": "PUT",
+      "status": 400,
+      "body": {
+        "secretKey": "fixture-only",
+        "title": " Fixture news ",
+        "contentHtml": " <p>Fixture content</p> ",
+        "summary": "",
+        "coverUrl": "",
+        "publishedAt": null
+      },
+      "response": {
+        "error": "id is required"
+      }
+    },
+    {
+      "name": "news update missing row",
+      "handler": "news",
+      "method": "PUT",
+      "status": 404,
+      "body": {
+        "secretKey": "fixture-only",
+        "title": " Fixture news ",
+        "contentHtml": " <p>Fixture content</p> ",
+        "summary": "",
+        "coverUrl": "",
+        "publishedAt": null,
+        "id": 99
+      },
+      "sql": [
+        {
+          "match": "update news",
+          "rows": []
+        }
+      ],
+      "response": {
+        "error": "Post not found"
+      }
+    },
+    {
+      "name": "news delete invalid id",
+      "handler": "news",
+      "method": "DELETE",
+      "status": 400,
+      "body": {
+        "secret": "fixture-only"
+      },
+      "response": {
+        "error": "id is required"
+      }
+    },
+    {
+      "name": "news delete",
+      "handler": "news",
+      "method": "DELETE",
+      "status": 200,
+      "body": {
+        "key": "fixture-only",
+        "id": 7
+      },
+      "sql": [
+        {
+          "match": "delete from news",
+          "rows": [
+            {
+              "id": 7
+            }
+          ],
+          "values": [
+            7
+          ]
+        }
+      ],
+      "response": {
+        "removed": {
+          "id": 7
+        }
+      }
+    },
+    {
+      "name": "news delete missing row",
+      "handler": "news",
+      "method": "DELETE",
+      "status": 404,
+      "body": {
+        "key": "fixture-only",
+        "id": 99
+      },
+      "sql": [
+        {
+          "match": "delete from news",
+          "rows": [],
+          "values": [
+            99
+          ]
+        }
+      ],
+      "response": {
+        "error": "Post not found"
+      }
+    },
+    {
+      "name": "news malformed JSON",
+      "handler": "news",
+      "method": "POST",
+      "status": 500,
+      "raw": "{"
+    },
+    {
+      "name": "parcel read alias code",
+      "handler": "parcel-updates",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "code": " FIXTURE001 "
+      },
+      "sql": [
+        {
+          "match": "from parcel_updates.*order by time desc, created_at desc",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "updates": [
+          {
+            "id": 11,
+            "code": "FIXTURE001",
+            "time": "2026-10-01T00:00:00.000Z",
+            "event": "Nhập kho",
+            "location": "Hà Nội",
+            "createdAt": "2026-10-01T00:00:00.000Z",
+            "updatedAt": "2026-10-01T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "parcel read alias parcel",
+      "handler": "parcel-updates",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "parcel": " FIXTURE001 "
+      },
+      "sql": [
+        {
+          "match": "from parcel_updates.*order by time desc, created_at desc",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "updates": [
+          {
+            "id": 11,
+            "code": "FIXTURE001",
+            "time": "2026-10-01T00:00:00.000Z",
+            "event": "Nhập kho",
+            "location": "Hà Nội",
+            "createdAt": "2026-10-01T00:00:00.000Z",
+            "updatedAt": "2026-10-01T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "parcel read alias number",
+      "handler": "parcel-updates",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "number": " FIXTURE001 "
+      },
+      "sql": [
+        {
+          "match": "from parcel_updates.*order by time desc, created_at desc",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "updates": [
+          {
+            "id": 11,
+            "code": "FIXTURE001",
+            "time": "2026-10-01T00:00:00.000Z",
+            "event": "Nhập kho",
+            "location": "Hà Nội",
+            "createdAt": "2026-10-01T00:00:00.000Z",
+            "updatedAt": "2026-10-01T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "parcel needs code",
+      "handler": "parcel-updates",
+      "method": "GET",
+      "status": 400,
+      "response": {
+        "error": "code is required"
+      }
+    },
+    {
+      "name": "parcel empty timeline",
+      "handler": "parcel-updates",
+      "method": "GET",
+      "status": 200,
+      "query": {
+        "code": "NONE"
+      },
+      "sql": [
+        {
+          "match": "from parcel_updates",
+          "rows": [],
+          "values": [
+            "NONE"
+          ]
+        }
+      ],
+      "response": {
+        "code": "NONE",
+        "updates": []
+      }
+    },
+    {
+      "name": "parcel unauthorized",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 401,
+      "body": {
+        "secret": "wrong"
+      },
+      "response": {
+        "error": "Unauthorized"
+      }
+    },
+    {
+      "name": "parcel missing mode",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 400,
+      "body": {
+        "secret": "fixture-only"
+      },
+      "response": {
+        "error": "mode is required"
+      }
+    },
+    {
+      "name": "parcel missing write code",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 400,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "CREATE"
+      },
+      "response": {
+        "error": "parcelCode is required"
+      }
+    },
+    {
+      "name": "parcel unknown mode",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 400,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "other",
+        "code": "FIXTURE001"
+      },
+      "response": {
+        "error": "Unknown mode. Use CREATE, UPDATE or DELETE."
+      }
+    },
+    {
+      "name": "parcel create aliases 0",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "parcelCode": " FIXTURE001 ",
+        "mode": " create ",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội"
+        }
+      },
+      "sql": [
+        {
+          "match": "insert into parcels",
+          "rows": [],
+          "values": [
+            "FIXTURE001"
+          ]
+        },
+        {
+          "match": "insert into parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "FIXTURE001",
+            "2026-10-01T00:00:00.000Z",
+            "Nhập kho",
+            "Hà Nội"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "update": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel create aliases 1",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secretKey": "fixture-only",
+        "code": " FIXTURE001 ",
+        "mode": " create ",
+        "data": {
+          "timestamp": "2026-10-01T00:00:00.000Z",
+          "description": "Nhập kho",
+          "place": "Hà Nội"
+        }
+      },
+      "sql": [
+        {
+          "match": "insert into parcels",
+          "rows": [],
+          "values": [
+            "FIXTURE001"
+          ]
+        },
+        {
+          "match": "insert into parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "FIXTURE001",
+            "2026-10-01T00:00:00.000Z",
+            "Nhập kho",
+            "Hà Nội"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "update": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel create aliases 2",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "key": "fixture-only",
+        "number": " FIXTURE001 ",
+        "mode": " create ",
+        "data": {
+          "date": "2026-10-01T00:00:00.000Z",
+          "description": "Nhập kho",
+          "place": "Hà Nội"
+        }
+      },
+      "sql": [
+        {
+          "match": "insert into parcels",
+          "rows": [],
+          "values": [
+            "FIXTURE001"
+          ]
+        },
+        {
+          "match": "insert into parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "FIXTURE001",
+            "2026-10-01T00:00:00.000Z",
+            "Nhập kho",
+            "Hà Nội"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "update": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel UPDATE target updateId",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "UPDATE",
+        "parcelCode": "FIXTURE001",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội"
+        },
+        "updateId": 11
+      },
+      "sql": [
+        {
+          "match": "update parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "2026-10-01T00:00:00.000Z",
+            "Nhập kho",
+            "Hà Nội",
+            11,
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "update": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel UPDATE target data.id",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "UPDATE",
+        "parcelCode": "FIXTURE001",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "id": 11
+        }
+      },
+      "sql": [
+        {
+          "match": "update parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "2026-10-01T00:00:00.000Z",
+            "Nhập kho",
+            "Hà Nội",
+            11,
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "update": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel UPDATE target data.updateId",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "UPDATE",
+        "parcelCode": "FIXTURE001",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "updateId": 11
+        }
+      },
+      "sql": [
+        {
+          "match": "update parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "2026-10-01T00:00:00.000Z",
+            "Nhập kho",
+            "Hà Nội",
+            11,
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "update": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel UPDATE target latest",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "UPDATE",
+        "parcelCode": "FIXTURE001",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội"
+        }
+      },
+      "sql": [
+        {
+          "match": "select id.*order by time desc, created_at desc",
+          "rows": [
+            {
+              "id": 11
+            }
+          ],
+          "values": [
+            "FIXTURE001"
+          ]
+        },
+        {
+          "match": "update parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            "2026-10-01T00:00:00.000Z",
+            "Nhập kho",
+            "Hà Nội",
+            11,
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "update": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel DELETE target updateId",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "DELETE",
+        "parcelCode": "FIXTURE001",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội"
+        },
+        "updateId": 11
+      },
+      "sql": [
+        {
+          "match": "delete from parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            11,
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "removed": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel DELETE target data.id",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "DELETE",
+        "parcelCode": "FIXTURE001",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "id": 11
+        }
+      },
+      "sql": [
+        {
+          "match": "delete from parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            11,
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "removed": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel DELETE target data.updateId",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "DELETE",
+        "parcelCode": "FIXTURE001",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "updateId": 11
+        }
+      },
+      "sql": [
+        {
+          "match": "delete from parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            11,
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "removed": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel DELETE target latest",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "DELETE",
+        "parcelCode": "FIXTURE001",
+        "data": {
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội"
+        }
+      },
+      "sql": [
+        {
+          "match": "select id.*order by time desc, created_at desc",
+          "rows": [
+            {
+              "id": 11
+            }
+          ],
+          "values": [
+            "FIXTURE001"
+          ]
+        },
+        {
+          "match": "delete from parcel_updates",
+          "rows": [
+            {
+              "id": 11,
+              "code": "FIXTURE001",
+              "time": "2026-10-01T00:00:00.000Z",
+              "event": "Nhập kho",
+              "location": "Hà Nội",
+              "createdAt": "2026-10-01T00:00:00.000Z",
+              "updatedAt": "2026-10-01T00:00:00.000Z"
+            }
+          ],
+          "values": [
+            11,
+            "FIXTURE001"
+          ]
+        }
+      ],
+      "response": {
+        "code": "FIXTURE001",
+        "removed": {
+          "id": 11,
+          "code": "FIXTURE001",
+          "time": "2026-10-01T00:00:00.000Z",
+          "event": "Nhập kho",
+          "location": "Hà Nội",
+          "createdAt": "2026-10-01T00:00:00.000Z",
+          "updatedAt": "2026-10-01T00:00:00.000Z"
+        }
+      }
+    },
+    {
+      "name": "parcel latest not found",
+      "handler": "parcel-updates",
+      "method": "POST",
+      "status": 404,
+      "body": {
+        "secret": "fixture-only",
+        "mode": "DELETE",
+        "code": "FIXTURE001"
+      },
+      "sql": [
+        {
+          "match": "select id",
+          "rows": []
+        }
+      ],
+      "response": {
+        "error": "Update not found"
+      }
+    },
+    {
+      "name": "track number required",
+      "handler": "track",
+      "method": "POST",
+      "status": 400,
+      "body": {
+        "number": " "
+      },
+      "response": {
+        "error": "number is required"
+      }
+    },
+    {
+      "name": "track provider lifecycle explicit",
+      "handler": "track",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "number": " FIXTURE001 ",
+        "carrier": "100001"
+      },
+      "upstream": [
+        {
+          "path": "/register",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 100001
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/gettrackinfo",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 100001
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001",
+                  "track": {}
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/deletetrack",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 100001
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "response": {
+        "register": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001"
+              }
+            ]
+          }
+        },
+        "info": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001",
+                "track": {}
+              }
+            ]
+          }
+        },
+        "stop": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "track provider lifecycle text numeric",
+      "handler": "track",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "number": "FIXTURE001",
+        "carrierText": "100001 Fixture"
+      },
+      "upstream": [
+        {
+          "path": "/register",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 100001
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/gettrackinfo",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 100001
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001",
+                  "track": {}
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/deletetrack",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 100001
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "response": {
+        "register": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001"
+              }
+            ]
+          }
+        },
+        "info": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001",
+                "track": {}
+              }
+            ]
+          }
+        },
+        "stop": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "track embedded provider error retains HTTP 200",
+      "handler": "track",
+      "method": "POST",
+      "status": 200,
+      "body": {
+        "number": "FIXTURE001",
+        "carrier": 100001
+      },
+      "upstream": [
+        {
+          "path": "/register",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 100001
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "errors": [
+                {
+                  "message": "Fixture rejection"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "response": {
+        "error": "Fixture rejection",
+        "detail": {
+          "data": {
+            "errors": [
+              {
+                "message": "Fixture rejection"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "track catalog resolution afghan post",
+      "handler": "track",
+      "method": "POST",
+      "body": {
+        "number": "FIXTURE001",
+        "carrierText": "afghan post"
+      },
+      "status": 200,
+      "upstream": [
+        {
+          "path": "/register",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 1021
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/gettrackinfo",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 1021
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001",
+                  "track": {}
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/deletetrack",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 1021
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "response": {
+        "register": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001"
+              }
+            ]
+          }
+        },
+        "info": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001",
+                "track": {}
+              }
+            ]
+          }
+        },
+        "stop": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "track catalog resolution afghan",
+      "handler": "track",
+      "method": "POST",
+      "body": {
+        "number": "FIXTURE001",
+        "carrierText": "afghan"
+      },
+      "status": 200,
+      "upstream": [
+        {
+          "path": "/register",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 1021
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/gettrackinfo",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 1021
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001",
+                  "track": {}
+                }
+              ]
+            }
+          }
+        },
+        {
+          "path": "/deletetrack",
+          "body": [
+            {
+              "number": "FIXTURE001",
+              "carrier": 1021
+            }
+          ],
+          "status": 200,
+          "response": {
+            "data": {
+              "accepted": [
+                {
+                  "number": "FIXTURE001"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "response": {
+        "register": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001"
+              }
+            ]
+          }
+        },
+        "info": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001",
+                "track": {}
+              }
+            ]
+          }
+        },
+        "stop": {
+          "data": {
+            "accepted": [
+              {
+                "number": "FIXTURE001"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operator": {
+    "news": {
+      "id": 7,
+      "title": "Fixture news",
+      "summary": null,
+      "coverUrl": null,
+      "slug": "fixture-news",
+      "publishedAt": null,
+      "contentHtml": "<p>Fixture content</p>",
+      "createdAt": "2026-10-01T00:00:00.000Z"
+    },
+    "parcelEvent": {
+      "id": 11,
+      "code": "FIXTURE001",
+      "time": "2026-10-01T00:00:00.000Z",
+      "event": "Nhập kho",
+      "location": "Hà Nội",
+      "createdAt": "2026-10-01T00:00:00.000Z",
+      "updatedAt": "2026-10-01T00:00:00.000Z"
+    }
+  }
+}
