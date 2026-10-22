@@ -1,0 +1,33 @@
+---
+import map from '../data/contact-map.json';
+// All geometry is local build-time data. Pins use the same projection as the land.
+const project = (lon: number, lat: number) => ({ x: (lon - 100) * 420 / 18, y: (27 - lat) * 464 / 19 });
+const guangzhou = project(113.26, 23.13);
+const pingxiang = project(106.75, 22.1);
+const hanoi = project(105.85, 21.03);
+const hcm = project(106.63, 10.82);
+---
+<svg aria-labelledby="map-title map-description" class="asia-map" role="img" viewBox="0 0 420 464" xmlns="http://www.w3.org/2000/svg">
+  <title id="map-title">Kết nối Quảng Châu – Bằng Tường – Hà Nội</title>
+  <desc id="map-description">Bản đồ Việt Nam và các nước lân cận từ Natural Earth. Tuyến nét đứt nối Quảng Châu qua Bằng Tường, Trung Quốc tới Hà Nội.</desc>
+  <g fill="#2d4b31" stroke="#75916d" stroke-width="0.7" stroke-linejoin="round" fill-rule="evenodd">
+    {map.countries.filter(c => c.name !== 'Vietnam').map(country => <path d={country.d}><title>{country.name}</title></path>)}
+    {map.countries.filter(c => c.name === 'Vietnam').map(country => <path d={country.d} fill="#42613a" stroke="#9ab78b"><title>Việt Nam</title></path>)}
+  </g>
+  <g class="region-labels"><text x="65" y="226">LÀO</text><text x="40" y="308">THÁI LAN</text><text x="53" y="365">CAMPUCHIA</text><text x="259" y="315" fill="#d5e5cb">VIỆT NAM</text></g>
+  <path d={`M${guangzhou.x},${guangzhou.y} L${pingxiang.x},${pingxiang.y} L${hanoi.x},${hanoi.y}`} fill="none" stroke="#b4e77a" stroke-width="2" stroke-dasharray="5 5"/>
+  <g fill="#b4e77a" stroke="#18351A" stroke-width="2.5">
+    {[guangzhou, pingxiang, hanoi, hcm].map(pin => <circle cx={pin.x} cy={pin.y} r="4.5"/>)}
+  </g>
+  <g class="city-labels">
+    <text x="308" y="54" text-anchor="middle">Quảng Châu<tspan x="308" dy="19">Guangzhou</tspan></text>
+    <text x="147" y="83" text-anchor="end">TRUNG QUỐC<tspan x="147" dy="19">Bằng Tường</tspan></text>
+    <text x="123" y="166" text-anchor="end">Hà Nội</text>
+    <text x="169" y="401">TP.HCM</text>
+  </g>
+</svg>
+<style>
+  .asia-map { display: block; width: 100%; height: auto; max-width: 520px; margin-inline: auto; background: #18351A; }
+  .city-labels { fill: #fff; font: 600 16px Arial, sans-serif; paint-order: stroke; stroke: #18351A; stroke-width: 3px; stroke-linejoin: round; }
+  .region-labels { fill: #b3c6a9; font: 12px Arial, sans-serif; letter-spacing: 1px; }
+</style>
