@@ -5,5 +5,6 @@ export default defineConfig({
   output: 'static',
   build: { format: 'file' },
   trailingSlash: 'never',
-  vite: { plugins: [localApi()] },
+  // Keep the component menu script external for strict script-src CSP.
+  vite: { build: { assetsInlineLimit: 0 }, plugins: [localApi()] },
 });

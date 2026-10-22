@@ -7,6 +7,6 @@ for (const file of files) {
   if (result.status !== 0) process.exit(result.status || 1);
 }
 const result = spawnSync(process.execPath,
-  ['--import', './tests/register.js', 'tests/acceptance.test.js'],
+  ['--import', './tests/register.js', '--test', ...readdirSync('tests').filter(name => name.endsWith('.test.js')).map(name => `tests/${name}`)],
   { stdio: 'inherit' });
 process.exit(result.status || (result.signal ? 1 : 0));

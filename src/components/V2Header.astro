@@ -1,1 +1,41 @@
-<a class="skip" href="#main">Đến nội dung chính</a><div class="topbar"><div class="wrap info-items"><span>⌖ D10-12 Geleximco, Hà Đông, Hà Nội</span><span>◷ <span data-en="Support 24/7">Hỗ trợ 24/7</span></span><a href="tel:0966862355">↗ 0966 862 355</a><a href="mailto:vietson707@gmail.com">✉ vietson707@gmail.com</a><div aria-label="Ngôn ngữ / Language" class="languages" role="group"><button aria-pressed="true" data-lang="vi" type="button">VI</button><span>/</span><button aria-pressed="false" data-lang="en" type="button">EN</button></div></div></div><header class="wrap header"><a aria-label="HL Trung Việt Logistics — Trang chủ" href="index.html"><img alt="HL Trung Việt Logistics" class="logo" height="80" src="/assets/logo-full.svg" width="142"/></a><nav aria-label="Điều hướng chính"><a data-en="About us" href="index.html#about">Về chúng tôi</a><a data-en="Services" href="index.html#services">Dịch vụ</a><a data-en="Rates" href="index.html#rates">Bảng giá</a><a data-en="Track shipment" href="track.html">Tra cứu vận đơn</a></nav><a class="button nav-contact" data-en="Get in touch ↗" href="contact.html">Liên hệ ngay ↗</a></header>
+<a class="skip" href="#main">Đến nội dung chính</a><div class="topbar"><div class="wrap info-items"><span>⌖ D10-12 Geleximco, Hà Đông, Hà Nội</span><span>◷ <span data-en="Support 24/7">Hỗ trợ 24/7</span></span><a href="tel:0966862355">↗ 0966 862 355</a><a href="mailto:vietson707@gmail.com">✉ vietson707@gmail.com</a><div aria-label="Ngôn ngữ / Language" class="languages" role="group"><button aria-pressed="true" data-lang="vi" type="button">VI</button><span>/</span><button aria-pressed="false" data-lang="en" type="button">EN</button></div></div></div><header class="wrap header">
+  <a class="header-brand" aria-label="HL Trung Việt Logistics — Trang chủ" href="index.html"><img alt="HL Trung Việt Logistics" class="logo" height="80" src="/assets/logo-full.svg" width="142"/></a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="header-menu" aria-label="Mở menu điều hướng">
+    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+  </button>
+  <nav id="header-menu" class="header-menu" aria-label="Điều hướng chính">
+    <div class="header-links">
+      <a data-en="About us" href="index.html#about">Về chúng tôi</a>
+      <a data-en="Services" href="index.html#services">Dịch vụ</a>
+      <a data-en="Rates" href="index.html#rates">Bảng giá</a>
+      <a data-en="Track shipment" href="track.html">Tra cứu vận đơn</a>
+    </div>
+    <a class="button nav-contact" data-en="Get in touch ↗" href="contact.html">Liên hệ ngay ↗</a>
+  </nav>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const menu = document.querySelector<HTMLElement>('#header-menu');
+  if (toggle && menu) {
+    const mobile = window.matchMedia('(max-width: 768px)');
+    const setOpen = (open: boolean, restoreFocus = false) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Đóng menu điều hướng' : 'Mở menu điều hướng');
+      menu.classList.toggle('is-open', open);
+      menu.inert = mobile.matches && !open;
+      if (restoreFocus) toggle.focus();
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') setOpen(false, true);
+    });
+    menu.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('a') && mobile.matches) setOpen(false, true);
+    });
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Node && !toggle.closest('.header')?.contains(event.target)) setOpen(false);
+    });
+    mobile.addEventListener('change', () => setOpen(false));
+    setOpen(false);
+  }
+</script>
