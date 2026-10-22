@@ -56,10 +56,9 @@ if ($('parcel')) {
   if (busy || (mode !== 'create' && !selected)) return;
   if (mode !== 'delete' && !validate(form)) return;
   const code = mode === 'create' ? $('parcel-code').value.trim() : $('read-code').value.trim();
-  const secret = $('parcel-secret').value;
-  const auth = await fetch('/api/parcel-updates', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'verify',secret})}).catch(() => null);
+  const auth = await fetch('/api/parcel-updates', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'verify'})}).catch(() => null);
   if (!auth?.ok) { $('admin-status').textContent = 'Không thể xác thực.'; return; }
-  const payload = { secret, mode, parcelCode: code, updateId: selected?.id,
+  const payload = { mode, parcelCode: code, updateId: selected?.id,
    data: {time: new Date($('event-time').value+'+07:00').toISOString(), event: $('event-text').value.trim(), location: $('event-location').value.trim()} };
   busy = true; document.querySelectorAll('#parcel button,#events button,#delete').forEach(b => b.disabled = true);
   $('admin-status').textContent = 'Đang gửi…';

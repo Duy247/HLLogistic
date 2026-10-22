@@ -1,3 +1,4 @@
+process.env.LEGACY_ADMIN_SECRET_ENABLED = 'true';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';

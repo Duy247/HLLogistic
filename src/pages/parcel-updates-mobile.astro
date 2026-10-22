@@ -61,8 +61,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h1>Parcel Updates (Mobile Scan)</h1>
     <div class="card config-card">
         <p>Thao tác ghi cần xác thực nhân viên qua hệ thống.</p>
-        <input type="password" autocomplete="off" id="secret" aria-label="Parcel updates secret" />
-        <button type="button" id="parcel-login">Đăng nhập</button><p id="parcel-login-status" role="status"></p><div class="muted">Không lưu, chỉ gửi cùng yêu cầu.</div>
+        <label for="admin-username">Tên đăng nhập</label><input id="admin-username" autocomplete="username" /><button type="button" id="admin-logout">Đăng xuất</button><input type="password" autocomplete="current-password" id="secret" aria-label="Mật khẩu" />
+        <button type="button" id="parcel-login">Đăng nhập</button><p id="parcel-login-status" role="status"></p><div class="muted">Phiên đăng nhập có thời hạn.</div>
     </div>
 
     <fieldset id="parcel-editor" disabled style="border:0;padding:0;margin:0;min-width:0"><div class="card scan-card">

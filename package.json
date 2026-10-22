@@ -16,7 +16,8 @@
     "dev": "astro dev --host 127.0.0.1 --port 3000",
     "build": "astro build",
     "preview": "npm run build && node server.js",
-    "check": "astro check && npm run build && node scripts/check.js && node scripts/check-build.js"
+    "check": "astro check && npm run build && node scripts/check.js && node scripts/check-build.js",
+    "test": "node scripts/check.js"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.6",

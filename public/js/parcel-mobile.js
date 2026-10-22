@@ -1,6 +1,5 @@
 
         (function() {
-            const secretEl = document.getElementById('secret');
             const codeEl = document.getElementById('parcelCode');
             const timeEl = document.getElementById('time');
             const locEl = document.getElementById('location');
@@ -151,7 +150,6 @@
 
             async function sendRequest() {
                 const payload = {
-                    secret: secretEl.value,
                     mode: 'CREATE',
                     parcelCode: codeEl.value.trim(),
                     data: {
@@ -161,14 +159,7 @@
                     }
                 };
 
-                if (!payload.secret) {
-                    statusEl.textContent = 'Thao tác cần xác thực nhân viên qua hệ thống.';
-                    statusEl.className = 'status error';
-                    updateScanOverlay(undefined, 'Cần xác thực nhân viên.');
-                    flashEdge('error');
-                    return;
-                }
-                const auth = await fetch(WRITE_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'verify', secret: payload.secret})}).catch(() => null);
+                const auth = await fetch(WRITE_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'verify'})}).catch(() => null);
                 if (!auth?.ok) { statusEl.textContent = 'Không thể xác thực.'; return; }
                 if (!payload.parcelCode) {
                     statusEl.textContent = 'Chưa có mã vận đơn.';

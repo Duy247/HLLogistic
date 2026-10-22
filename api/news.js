@@ -1,5 +1,6 @@
+import { isAdmin } from '../server-lib/admin-auth.js';
 import { sanitizeContent, plainText, safePost } from '../server-lib/news-content.js';
-import { allowCors, verifySecret, rateLimit } from '../server-lib/security.js';
+import { allowCors, rateLimit } from '../server-lib/security.js';
 import { readBody } from '../server-lib/body.js';
 import { sql } from '@vercel/postgres';
 
@@ -38,7 +39,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     if (req.headers?.['x-admin-secret'] && !rateLimit(req, res, 'news-read-auth', 60)) return;
-    const staff = verifySecret(req.headers?.['x-admin-secret'], SECRET);
+    const staff = await isAdmin(req, req.headers?.['x-admin-secret'], SECRET);
     const limit = Math.min(parseNumber(req.query.limit, 5), 20);
     const offset = parseNumber(req.query.offset, 0);
     const pageSize = limit + 1;
@@ -73,16 +74,12 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (!SECRET) {
-    res.status(500).json({ error: 'Service unavailable' });
-    return;
-  }
 
   if (!rateLimit(req, res, 'news-requests', 180)) return;
   try {
     const body = await readBody(req);
     const providedSecret = body.secret || body.secretKey || body.key;
-    if (!verifySecret(providedSecret, SECRET)) {
+    if (!(await isAdmin(req, providedSecret, SECRET))) {
       if (!rateLimit(req, res, 'news-auth', 10)) return;
       res.status(401).json({ error: 'Unauthorized' });
       return;

@@ -9,7 +9,7 @@ if (fs.existsSync(path.join(root, '.env'))) process.loadEnvFile(path.join(root, 
 
 // Import after loading env: news and parcel handlers capture their secret at import.
 const handlers = Object.fromEntries(await Promise.all(
-  ['track', 'carriers', 'parcel-updates', 'news', 'news-post'].map(async name =>
+  ['admin-auth', 'track', 'carriers', 'parcel-updates', 'news', 'news-post'].map(async name =>
     [`/api/${name}`, (await import(`./api/${name}.js`)).default])
 ));
 const mime = {

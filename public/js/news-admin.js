@@ -26,7 +26,7 @@
     var modeCode = document.getElementById("mode-code");
     var modePreview = document.getElementById("mode-preview");
 
-    var secretKey = "";
+    var authenticated = "";
     var posts = [];
     var currentId = null;
     var previewTimer = null;
@@ -77,10 +77,10 @@
 
     async function renderPreview() {
         if (!previewEl) return;
-        if (!secretKey) return;
+        if (!authenticated) return;
         var value = contentInput.value;
         try {
-            var response = await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'preview', secret: secretKey, contentHtml: value }) });
+            var response = await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'preview', contentHtml: value }) });
             var data = await response.json();
             if (response.ok && value === contentInput.value) previewEl.srcdoc = data.contentHtml || '';
         } catch { previewEl.srcdoc = ''; }
@@ -149,7 +149,7 @@
     async function fetchList() {
         setEditorStatus("Đang tải danh sách...");
         try {
-            var response = await fetch("/api/news?limit=50&offset=0", { headers: { "X-Admin-Secret": secretKey } });
+            var response = await fetch("/api/news?limit=50&offset=0", {});
             var data = await response.json();
             posts = Array.isArray(data.posts) ? data.posts : [];
             renderList();
@@ -162,7 +162,7 @@
     async function loadPost(id) {
         setEditorStatus("Đang tải bài viết...");
         try {
-            var response = await fetch("/api/news-post?id=" + encodeURIComponent(id), { headers: { "X-Admin-Secret": secretKey } });
+            var response = await fetch("/api/news-post?id=" + encodeURIComponent(id), {});
             var data = await response.json();
             if (!data.post) {
                 setEditorStatus("Không tìm thấy bài viết.");
@@ -186,7 +186,6 @@
 
     function getPayload() {
         return {
-            secret: secretKey,
             id: currentId,
             title: titleInput.value.trim(),
             summary: summaryInput.value.trim(),
@@ -198,7 +197,7 @@
     }
 
     async function savePost() {
-        if (!secretKey) {
+        if (!authenticated) {
             setEditorStatus("Bạn chưa đăng nhập.");
             return;
         }
@@ -234,7 +233,7 @@
             setEditorStatus("Chọn bài viết cần xóa.");
             return;
         }
-        if (!secretKey) {
+        if (!authenticated) {
             setEditorStatus("Bạn chưa đăng nhập.");
             return;
         }
@@ -246,7 +245,7 @@
             var response = await fetch("/api/news", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ secret: secretKey, id: currentId })
+                body: JSON.stringify({  id: currentId })
             });
             var data = await response.json();
             if (!response.ok) {
@@ -265,9 +264,9 @@
         var secret = loginSecret.value;
         loginBtn.disabled = true;
         try {
-            var response = await fetch('/api/news', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'verify', secret: secret }) });
+            var response = await fetch('/api/admin-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: document.getElementById('admin-username').value, password: secret }) });
             if (!response.ok) throw new Error();
-            secretKey = secret;
+            authenticated = true;
             loginSecret.value = '';
             setLoginStatus('');
             showAdmin();
@@ -279,6 +278,10 @@
         sessionStorage.removeItem('newsAdminSecret');
     }
 
+    document.getElementById('admin-logout').addEventListener('click', async () => {
+        const response = await fetch('/api/admin-auth', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'logout'})});
+        if (response.ok) location.reload();
+    });
     loginBtn.addEventListener("click", login);
     loginSecret.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {

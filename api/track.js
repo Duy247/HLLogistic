@@ -1,4 +1,5 @@
-import { allowCors, rateLimit } from '../server-lib/security.js';
+import { databaseRateLimit } from '../server-lib/db-rate-limit.js';
+import { allowCors } from '../server-lib/security.js';
 import { readBody } from '../server-lib/body.js';
 const BASE_V24 = 'https://api.17track.net/track/v2.4';
 import fs from 'fs';
@@ -51,7 +52,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (!rateLimit(req, res, 'track', 10)) return;
+  if (!await databaseRateLimit(req, res)) return;
 
   const API_KEY = process.env.TRACK17_KEY || '';
   if (!API_KEY) {

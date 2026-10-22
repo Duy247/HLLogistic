@@ -29,6 +29,10 @@
     {
       "source": "/api/news-post",
       "destination": "/api/news-post.js"
+    },
+    {
+      "source": "/api/admin-auth",
+      "destination": "/api/admin-auth.js"
     }
   ],
   "installCommand": "npm install",

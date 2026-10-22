@@ -178,12 +178,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 </div>
             </div>
 
+            <button type="button" id="admin-logout">Đăng xuất</button>
             <div id="login-panel" class="admin-card admin-login">
                 <h4 class="mb-3">Đăng nhập quản trị</h4>
-                <p class="status-text mb-4">Thao tác ghi cần xác thực nhân viên qua hệ thống. Nhập khóa bí mật tại đây.</p>
+                <p class="status-text mb-4">Thao tác ghi cần xác thực nhân viên qua hệ thống. Đăng nhập bằng tài khoản nhân viên.</p>
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                    <input type="password" autocomplete="off" id="login-secret" aria-label="News admin secret" />
+                    <label for="admin-username">Tên đăng nhập</label><input id="admin-username" autocomplete="username" /><input type="password" autocomplete="current-password" id="login-secret" aria-label="Mật khẩu" />
                 </div>
                 <button id="login-btn" class="btn btn-primary w-100">Đăng nhập</button>
                 <div id="login-status" class="status-text mt-3"></div>

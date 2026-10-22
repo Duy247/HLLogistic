@@ -1,4 +1,5 @@
-import { allowCors, verifySecret, rateLimit } from '../server-lib/security.js';
+import { isAdmin } from '../server-lib/admin-auth.js';
+import { allowCors, rateLimit } from '../server-lib/security.js';
 import { readBody } from '../server-lib/body.js';
 import { sql } from '@vercel/postgres';
 
@@ -122,10 +123,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (!SECRET) {
-    send(res, 500, { error: 'Service unavailable' });
-    return;
-  }
 
   if (!rateLimit(req, res, 'parcel-updates-requests', 180)) return;
   let body;
@@ -136,7 +133,7 @@ export default async function handler(req, res) {
     return;
   }
   const providedSecret = body.secret || body.secretKey || body.key;
-  if (!verifySecret(providedSecret, SECRET)) {
+  if (!(await isAdmin(req, providedSecret, SECRET))) {
     if (!rateLimit(req, res, 'parcel-updates-auth', 10)) return;
     send(res, 401, { error: 'Unauthorized' });
     return;

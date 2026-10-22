@@ -1,5 +1,6 @@
+import { isAdmin } from '../server-lib/admin-auth.js';
 import { safePost } from '../server-lib/news-content.js';
-import { allowCors, verifySecret, rateLimit } from '../server-lib/security.js';
+import { allowCors, rateLimit } from '../server-lib/security.js';
 import { sql } from '@vercel/postgres';
 
 export const config = {
@@ -21,7 +22,7 @@ export default async function handler(req, res) {
   }
 
   if (req.headers?.['x-admin-secret'] && !rateLimit(req, res, 'news-read-auth', 60)) return;
-  const staff = verifySecret(req.headers?.['x-admin-secret'], process.env.NEWS_ADMIN_SECRET);
+  const staff = await isAdmin(req, req.headers?.['x-admin-secret'], process.env.NEWS_ADMIN_SECRET);
   const idParam = req.query.id;
   const slugParam = req.query.slug;
 
