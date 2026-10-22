@@ -1,3 +1,4 @@
+import { readBody } from '../server-lib/body.js';
 const BASE_V24 = 'https://api.17track.net/track/v2.4';
 import fs from 'fs';
 import path from 'path';
@@ -34,21 +35,6 @@ function resolveCarrierCode(carrierCode, carrierText) {
   if (found) return Number(found.key);
   const partial = carriers.find(c => String(c._name || c.name || '').toLowerCase().includes(target));
   return partial ? Number(partial.key) : undefined;
-}
-
-async function readBody(req) {
-  return new Promise((resolve, reject) => {
-    let data = '';
-    req.on('data', chunk => (data += chunk));
-    req.on('end', () => {
-      try {
-        resolve(data ? JSON.parse(data) : {});
-      } catch (err) {
-        reject(err);
-      }
-    });
-    req.on('error', reject);
-  });
 }
 
 export default async function handler(req, res) {

@@ -1,3 +1,4 @@
+import { readBody } from '../server-lib/body.js';
 import { sql } from '@vercel/postgres';
 
 export const config = {
@@ -28,21 +29,6 @@ function slugify(text) {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
-}
-
-async function readBody(req) {
-  return new Promise((resolve, reject) => {
-    let data = '';
-    req.on('data', chunk => (data += chunk));
-    req.on('end', () => {
-      try {
-        resolve(data ? JSON.parse(data) : {});
-      } catch (err) {
-        reject(err);
-      }
-    });
-    req.on('error', reject);
-  });
 }
 
 export default async function handler(req, res) {

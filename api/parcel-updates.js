@@ -1,3 +1,4 @@
+import { readBody } from '../server-lib/body.js';
 import { sql } from '@vercel/postgres';
 
 export const config = {
@@ -130,7 +131,13 @@ export default async function handler(req, res) {
     return;
   }
 
-  const body = typeof req.body === 'object' && req.body ? req.body : {};
+  let body;
+  try {
+    body = await readBody(req);
+  } catch (err) {
+    send(res, 500, { error: err.message || 'Database error' });
+    return;
+  }
   const providedSecret = body.secret || body.secretKey || body.key;
   if (providedSecret !== SECRET) {
     send(res, 401, { error: 'Unauthorized' });
