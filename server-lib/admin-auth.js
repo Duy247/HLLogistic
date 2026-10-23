@@ -11,23 +11,13 @@ export async function hashPassword(password) {
   return `scrypt$${SCRYPT.N}$${SCRYPT.r}$${SCRYPT.p}$${salt}$${key.toString('hex')}`;
 }
 export async function checkPassword(password, hash) {
-  let options = SCRYPT, salt = '0'.repeat(32), expected = '0'.repeat(128), valid = false;
-  if (typeof hash === 'string' && /^scrypt:[a-f0-9]{32}:[a-f0-9]{128}$/.test(hash)) {
-    [, salt, expected] = hash.split(':');
-    options = { ...SCRYPT, N: 2 ** 14 }; // Original Node scrypt defaults.
-    valid = true;
-  } else if (typeof hash === 'string') {
-    const parts = /^scrypt\$(\d+)\$(\d+)\$(\d+)\$([a-f0-9]{32})\$([a-f0-9]{128})$/.exec(hash);
-    if (parts) {
-      const N = Number(parts[1]), r = Number(parts[2]), p = Number(parts[3]);
-      // Bound stored parameters before allocating memory or CPU work.
-      if ([32768, 65536, 131072].includes(N) && r === 8 && p === 1) {
-        options = { N, r, p, maxmem: 256 * N * r };
-        salt = parts[4]; expected = parts[5]; valid = true;
-      }
-    }
-  }
-  const actual = await scrypt(password, salt, 64, options);
+  const parts = typeof hash === 'string'
+    ? /^scrypt\$32768\$8\$1\$([a-f0-9]{32})\$([a-f0-9]{128})$/.exec(hash) : null;
+  // Every attempt performs exactly one current-cost derivation and fixed-size comparison.
+  const valid = !!parts;
+  const salt = parts ? parts[1] : '0'.repeat(32);
+  const expected = parts ? parts[2] : '0'.repeat(128);
+  const actual = await scrypt(password, salt, 64, SCRYPT);
   return timingSafeEqual(actual, Buffer.from(expected, 'hex')) && valid;
 }
 export function signingKey() {

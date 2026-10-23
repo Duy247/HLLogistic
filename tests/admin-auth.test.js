@@ -64,14 +64,14 @@ test('database limiter uses shared scope/IP budgets, Retry-After and fails close
  for (const key of ['TRACK_RATE_IP_LIMIT','TRACK_RATE_GLOBAL_LIMIT','TRACK_RATE_WINDOW_SECONDS']) delete process.env[key];
 });
 
-test('parameterized and original scrypt hashes verify; unsafe parameters use dummy rejection', async () => {
+test('only current scrypt hashes verify; legacy and other parameters are rejected', async () => {
  const { scryptSync } = await import('node:crypto');
  const salt = '12'.repeat(16);
  const legacy = scryptSync('test-password', salt, 64, {N:16384,r:8,p:1,maxmem:64*1024*1024}).toString('hex');
- assert.equal(await checkPassword('test-password', `scrypt:${salt}:${legacy}`), true);
+ assert.equal(await checkPassword('test-password', `scrypt:${salt}:${legacy}`), false);
  assert.equal(await checkPassword('wrong', `scrypt:${salt}:${legacy}`), false);
  const strong = scryptSync('test-password', salt, 64, {N:65536,r:8,p:1,maxmem:128*1024*1024}).toString('hex');
- assert.equal(await checkPassword('test-password', `scrypt$65536$8$1$${salt}$${strong}`), true);
+ assert.equal(await checkPassword('test-password', `scrypt$65536$8$1$${salt}$${strong}`), false);
  for (const params of ['1$8$1', '32768$99$1', '32768$8$99', '999999999$8$1']) {
    assert.equal(await checkPassword('test-password', `scrypt$${params}$${salt}$${strong}`), false);
  }
@@ -110,18 +110,18 @@ test('login limits have independent config and username bucket is shared across 
  process.env.ADMIN_LOGIN_RATE_WINDOW_SECONDS='120';
  process.env.ADMIN_LOGIN_RATE_IP_LIMIT='7';
  process.env.ADMIN_LOGIN_RATE_GLOBAL_LIMIT='50';
- process.env.ADMIN_LOGIN_RATE_USERNAME_LIMIT='3';
+ process.env.ADMIN_LOGIN_RATE_USERNAME_LIMIT='10';
  try {
    globalThis.sqlQueue=[{match:'consume_rate_limit',values:['admin-login',hash('test'),120,7,50],rows:[{allowed:true}]}];
    assert.equal(await databaseRateLimit(req(),response(),'admin-login'),true);
    for (const ip of ['first-ip','second-ip']) {
-     globalThis.sqlQueue=[{match:'consume_rate_limit',values:['admin-login-username',hash('staff'),120,3,50],rows:[{allowed:false,retry_after:77}]}];
+     globalThis.sqlQueue=[{match:'consume_rate_limit',values:['admin-login-username',hash('staff'),120,10,50],rows:[{allowed:false,retry_after:77}]}];
      const denied=response(); const request=req(); request.socket.remoteAddress=ip;
      assert.equal(await databaseRateLimit(request,denied,'admin-login-username','staff'),false);
      assert.equal(denied.statusCode,429); assert.equal(denied.headers['Retry-After'],'77');
    }
    const login=req(); login.body={username:' STAFF ',password:'wrong'};
-   globalThis.sqlQueue=[{match:'consume_rate_limit',rows:[{allowed:true}]},{match:'consume_rate_limit',values:['admin-login-username',hash('staff'),120,3,50],rows:[{allowed:false,retry_after:77}]}];
+   globalThis.sqlQueue=[{match:'consume_rate_limit',rows:[{allowed:true}]},{match:'consume_rate_limit',values:['admin-login-username',hash('staff'),120,10,50],rows:[{allowed:false,retry_after:77}]}];
    const denied=response(); await auth(login,denied); assert.equal(denied.statusCode,429);
    assert.equal(globalThis.sqlQueue.length,0);
  } finally {
@@ -149,5 +149,57 @@ test('every successful login advances the version and invalidates earlier cookie
    globalThis.sqlQueue=[{match:'from admin_users',values:['7',version],rows:[{...user,session_version:version}]}];
    assert.equal((await sessionUser(req(cookie))).session_version,version);
    oldCookie=cookie;
+ }
+});
+
+test('unknown users and rejected hashes run exactly one current-cost scrypt and comparison', async () => {
+ const crypto = (await import('node:crypto')).default;
+ const { syncBuiltinESMExports } = await import('node:module');
+ const originalScrypt = crypto.scrypt, originalCompare = crypto.timingSafeEqual;
+ const calls = [], comparisons = [];
+ try {
+   crypto.scrypt = (...args) => { calls.push(args.slice(0,-1)); return originalScrypt(...args); };
+   crypto.timingSafeEqual = (a,b) => { comparisons.push([a.length,b.length]); return originalCompare(a,b); };
+   syncBuiltinESMExports();
+   const { checkPassword: instrumented } = await import('../server-lib/admin-auth.js?current-cost-test');
+   for (const hash of [undefined, 'malformed', `scrypt:${'12'.repeat(16)}:${'34'.repeat(64)}`, `scrypt$65536$8$1$${'12'.repeat(16)}$${'34'.repeat(64)}`]) {
+     calls.length=0; comparisons.length=0;
+     assert.equal(await instrumented('synthetic-password',hash),false);
+     assert.equal(calls.length,1);
+     assert.deepEqual(calls[0].slice(1),['0'.repeat(32),64,{N:32768,r:8,p:1,maxmem:64*1024*1024}]);
+     assert.deepEqual(comparisons,[[64,64]]);
+   }
+ } finally {
+   crypto.scrypt=originalScrypt; crypto.timingSafeEqual=originalCompare; syncBuiltinESMExports();
+ }
+});
+
+test('username lockouts log only the normalized username; defaults and overrides remain looser than IP', async () => {
+ const { createHash } = await import('node:crypto');
+ const digest = text => createHash('sha256').update(text).digest('hex');
+ const originalWarn=console.warn;
+ const warnings=[];
+ console.warn=(...args) => warnings.push(args);
+ try {
+   globalThis.sqlQueue=[{match:'consume_rate_limit',values:['admin-login',digest('test'),900,5,200],rows:[{allowed:true}]}];
+   assert.equal(await databaseRateLimit(req(),response(),'admin-login'),true);
+   const login=req(); login.body={username:' STAFF ',password:'synthetic-secret-never-log'};
+   globalThis.sqlQueue=[{match:'consume_rate_limit',rows:[{allowed:true}]},{match:'consume_rate_limit',values:['admin-login-username',digest('staff'),900,10,200],rows:[{allowed:false,retry_after:60}]}];
+   const denied=response(); await auth(login,denied); assert.equal(denied.statusCode,429);
+   assert.deepEqual(warnings, [['Admin login username lockout: "staff"']]);
+   warnings.length=0;
+   for (const scope of ['admin-login','track']) {
+     globalThis.sqlQueue=[{match:'consume_rate_limit',rows:[{allowed:false,retry_after:60}]}];
+     await databaseRateLimit(req(),response(),scope);
+   }
+   globalThis.sqlQueue=[{match:'consume_rate_limit',error:'synthetic outage'}];
+   await databaseRateLimit(req(),response(),'admin-login-username','staff');
+   assert.equal(warnings.length,0);
+   process.env.ADMIN_LOGIN_RATE_IP_LIMIT='12'; process.env.ADMIN_LOGIN_RATE_USERNAME_LIMIT='2';
+   globalThis.sqlQueue=[{match:'consume_rate_limit',values:['admin-login-username',digest('staff'),900,13,200],rows:[{allowed:true}]}];
+   assert.equal(await databaseRateLimit(req(),response(),'admin-login-username','staff'),true);
+ } finally {
+   console.warn=originalWarn;
+   delete process.env.ADMIN_LOGIN_RATE_IP_LIMIT; delete process.env.ADMIN_LOGIN_RATE_USERNAME_LIMIT;
  }
 });
