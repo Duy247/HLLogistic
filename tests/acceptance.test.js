@@ -37,6 +37,7 @@ for (const fixture of fixtures.api) {
       const req = Readable.from(representation === 'stream' ? [raw] : []);
       req.socket = { remoteAddress: fixture.name + representation };
       req.method = fixture.method;
+      req.headers = ['POST','PUT','PATCH','DELETE'].includes(req.method) ? {origin:'https://www.hltrungviet.com'} : {};
       req.query = fixture.query || {};
       if (representation === 'object') req.body = fixture.body;
       if (representation === 'string') req.body = raw;
@@ -52,7 +53,7 @@ for (const fixture of fixtures.api) {
         assert.equal(res.statusCode, fixture.status, representation);
         if (fixture.response) assert.deepEqual(res.body, fixture.response);
         if (fixture.catalog) assert.deepEqual(res.body, JSON.parse(readFileSync('carriers/apicarrier.all.json')));
-        assert.equal(headers['Access-Control-Allow-Origin'], undefined);
+        assert.equal(headers['Access-Control-Allow-Origin'], req.headers.origin);
         assert.equal(globalThis.sqlQueue.length, 0, 'Expected SQL not executed');
         assert.equal(upstream.length, 0, 'Expected provider request not executed');
       } finally { globalThis.fetch = originalFetch; }
@@ -110,7 +111,8 @@ test('one local HTTP server serves page/query routes and all five handlers', asy
     }
     assert.deepEqual(await (await fetch(base + '/api/carriers')).json(), JSON.parse(readFileSync('carriers/apicarrier.all.json')));
     assert.equal((await fetch(base + '/api/news-post')).status, 400);
-    assert.equal((await fetch(base + '/api/news', { method: 'PATCH' })).status, 405);
+    assert.equal((await fetch(base + '/api/news', { method: 'PATCH' })).status, 403);
+    assert.equal((await fetch(base + '/api/news', { method: 'PATCH', headers: {Origin:'https://www.hltrungviet.com'} })).status, 405);
     for (const route of ['/.env', '/package.json', '/api/news.js', '/server-lib/body.js', '/missing.html']) {
       assert.equal((await fetch(base + route)).status, 404, route);
     }

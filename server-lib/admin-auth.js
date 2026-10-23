@@ -4,21 +4,36 @@ import { sql } from '@vercel/postgres';
 import { verifySecret } from './security.js';
 const scrypt = promisify(scryptCallback);
 const COOKIE = '__Host-admin';
+const SCRYPT = { N: 2 ** 15, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
 export async function hashPassword(password) {
   const salt = randomBytes(16).toString('hex');
-  const key = await scrypt(password, salt, 64);
-  return `scrypt:${salt}:${key.toString('hex')}`;
+  const key = await scrypt(password, salt, 64, SCRYPT);
+  return `scrypt$${SCRYPT.N}$${SCRYPT.r}$${SCRYPT.p}$${salt}$${key.toString('hex')}`;
 }
 export async function checkPassword(password, hash) {
-  const valid = typeof hash === 'string' && /^scrypt:[a-f0-9]{32}:[a-f0-9]{128}$/.test(hash);
-  const [, salt, expected] = valid ? hash.split(':') : ['scrypt', '0'.repeat(32), '0'.repeat(128)];
-  const actual = await scrypt(password, salt, 64);
+  let options = SCRYPT, salt = '0'.repeat(32), expected = '0'.repeat(128), valid = false;
+  if (typeof hash === 'string' && /^scrypt:[a-f0-9]{32}:[a-f0-9]{128}$/.test(hash)) {
+    [, salt, expected] = hash.split(':');
+    options = { ...SCRYPT, N: 2 ** 14 }; // Original Node scrypt defaults.
+    valid = true;
+  } else if (typeof hash === 'string') {
+    const parts = /^scrypt\$(\d+)\$(\d+)\$(\d+)\$([a-f0-9]{32})\$([a-f0-9]{128})$/.exec(hash);
+    if (parts) {
+      const N = Number(parts[1]), r = Number(parts[2]), p = Number(parts[3]);
+      // Bound stored parameters before allocating memory or CPU work.
+      if ([32768, 65536, 131072].includes(N) && r === 8 && p === 1) {
+        options = { N, r, p, maxmem: 256 * N * r };
+        salt = parts[4]; expected = parts[5]; valid = true;
+      }
+    }
+  }
+  const actual = await scrypt(password, salt, 64, options);
   return timingSafeEqual(actual, Buffer.from(expected, 'hex')) && valid;
 }
-function signingKey() {
+export function signingKey() {
   const key = process.env.ADMIN_SESSION_SECRET;
-  if (!key || key.length < 32) throw new Error('Session configuration unavailable');
-  return key;
+  if (typeof key !== 'string' || !/^[a-fA-F0-9]{64}$/.test(key)) throw new Error('Session configuration unavailable');
+  return Buffer.from(key, 'hex');
 }
 function signature(value) { return createHmac('sha256', signingKey()).update(value).digest('base64url'); }
 export function sessionCookie(user, now = Date.now()) {

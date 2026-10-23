@@ -12,7 +12,8 @@ export function allowCors(req, res, methods) {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Access-Control-Allow-Methods', methods);
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Secret');
-  if (req.headers?.origin && req.headers.origin !== origin) {
+  const mutating = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method);
+  if ((mutating && !req.headers?.origin) || (req.headers?.origin && req.headers.origin !== origin)) {
     res.status(403).json({ error: 'Forbidden' });
     return false;
   }

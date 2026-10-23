@@ -16,7 +16,7 @@ const parcel = (await import('../api/parcel-updates.js')).default;
 const track = (await import('../api/track.js')).default;
 let client = 0;
 async function call(handler, { method = 'POST', body = {}, query = {}, headers = {}, ip } = {}) {
-  const req = { method, body, query, headers, socket: { remoteAddress: ip || `security-${client++}` } };
+  const req = { method, body, query, headers: {origin:'https://www.hltrungviet.com', ...headers}, socket: { remoteAddress: ip || `security-${client++}` } };
   const res = { headers: {}, setHeader(key, value) { this.headers[key] = value; },
     status(code) { this.statusCode = code; return this; }, json(data) { this.body = data; }, end() {} };
   await handler(req, res);
