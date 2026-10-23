@@ -101,3 +101,10 @@ This follow-up supersedes the earlier footer staff-link requirement.
 - Added `public/robots.txt`: allows `/` and disallows news-admin, admin-parcels, parcel-updates and parcel-updates-mobile in both clean and `.html` forms.
 - Updated `tests/navigation.test.js` to reject staff links in shared public navigation and verify built staff-page head tags, robots directives and absence of the deleted pages from build output.
 - Validation: `npm run check`, `node scripts/check-v2.js` and `git diff --check` passed. No commit, branch change or deployment performed.
+
+## Homepage hero tracking overflow — 2026-10-22
+
+- Corrected the earlier incomplete fix: the aspect-ratio flex hero now has explicit `width:100%;min-width:0`. Its direct content child has `min-width:0;margin-inline:auto`; above 768px it uses `width:min(calc(100% - 80px),1240px);max-width:calc(100% - 80px);flex-shrink:0`. This constrains the parent as well as centering the content, independent of the shared wrap breakpoint.
+- Retained shrinkable tracking grid columns and input. Desktop controls remain side by side; existing mobile rules retain the stacked layout at 390px. Only hero layout CSS changed; branding, colors, markup and CSP-safe JavaScript are unchanged.
+- Computed desktop card bounds (CSS pixels; card fills content): 1024 → width 944, left 40, right 984; 1280 → width 1200, left 40, right 1240; 1440 → width 1240, left 100, right 1340. All right edges are <= viewport minus 40px. These are CSS calculations, not browser measurements. Chrome was not launched for this follow-up.
+- Validation: `npm run build` and `npm run check` passed. No commit or deployment performed.
